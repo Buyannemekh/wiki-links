@@ -12,7 +12,7 @@ class ProcessWikiData:
         self.spark = SparkSession.builder.getOrCreate()
         self.format = "xml"
         self.row_tag_revision = "revision"
-        self.row_tag_title = 'title'
+        self.row_tag_title = 'page'
         self.text_tag = "text"
         self.revision_df = self.get_revision_df_from_xml()
         self.article_df = self.get_article_df_from_xml()
