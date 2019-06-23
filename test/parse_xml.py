@@ -74,7 +74,7 @@ def write_to_postgres(df_link_count, jdbc_url):
 
 
 if __name__ == "__main__":
-    input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml"
+    input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
     pipeline = Pipeline(input_file)
 
     hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
