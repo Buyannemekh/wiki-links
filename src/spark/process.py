@@ -64,6 +64,6 @@ def find_links(text):
 if __name__ == "__main__":
     input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml"
     process = ProcessWikiData(input_file)
-    print(process.revision_df)
-    print(process.article_df)
+    process.revision_df.show()
+    process.article_df.show()
     #df_link = process.create_df_count_links()
