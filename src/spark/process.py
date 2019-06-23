@@ -62,7 +62,7 @@ def find_links(text):
 
 
 if __name__ == "__main__":
-    input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml"
+    input_file = "s3a://wikipedia-article-sample-data/history1.xml-p10p933.bz2"
     process = ProcessWikiData(input_file)
     process.revision_df.show()
     process.article_df.show()
