@@ -1,2 +1,2 @@
-https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-history1.xml-p10572p11357.bz2
-https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-history1.xml-p10p933.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-abstract19.xml.gz
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-abstract20.xml.gz
