@@ -22,6 +22,7 @@ class ParseXML:
         revision_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_revision).load(self.file)
         # convert time string to timestamp
         df = revision_df.withColumn("time", revision_df.timestamp.cast(TimestampType()))
+        df.printSchema()
         return df
 
     # parse xml and extract information under revision tag
