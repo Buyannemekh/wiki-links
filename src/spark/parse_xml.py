@@ -32,7 +32,7 @@ class ParseXML:
         article_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_title).load(self.file)
         article_df.printSchema()
         article_df.show()
-        df = article_df.select(f.col('revision.*'))
+        df = article_df.select(f.col('id'), f.col('revision.text'), f.col('revision.timestamp'))
         df.show()
         return article_df
 
@@ -40,6 +40,6 @@ class ParseXML:
 if __name__ == "__main__":
     input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
     process = ParseXML(input_file)
-    process.revision_df.show()
+    # process.revision_df.show()
     # process.article_df.show()
     #df_link = process.create_df_count_links()
