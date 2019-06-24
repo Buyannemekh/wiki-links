@@ -19,17 +19,14 @@ class ParseXML:
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
         page_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_title).load(self.file)
-        page_df.printSchema()
-        page_df.show()
         df = page_df.select(f.col('id'), f.col('revision.text'), f.col('revision.timestamp'))
         df = df.withColumn("time", df.timestamp.cast(TimestampType()))
-        df.show()
         return df
 
 
 if __name__ == "__main__":
     input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
     process = ParseXML(input_file)
-    # process.revision_df.show()
-    # process.article_df.show()
-    #df_link = process.create_df_count_links()
+    process.page_df.printSchema()
+    process.page_df.show()
+
