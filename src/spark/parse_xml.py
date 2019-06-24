@@ -34,7 +34,8 @@ class ParseXML:
 
     def explode_links(self):
         df = self.page_df_with_links.withColumn("link", explode(self.page_df_with_links.links))
-        return df
+        df_id_link_time = df.select(f.col('id'), f.col('time'), f.col('link'))
+        return df_id_link_time
 
 
 # return list of link titles from a text if exist, else return empty list
