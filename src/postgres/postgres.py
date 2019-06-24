@@ -1,6 +1,6 @@
 import psycopg2
 
-connection = psycopg2.connect(host='ec2-34-239-95-229.compute-1.amazonaws.com',
+connection = psycopg2.connect(host='xxxx',
                               database='test',
                               user='postgres', password='$password')
 
