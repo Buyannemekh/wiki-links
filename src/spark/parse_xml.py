@@ -31,7 +31,7 @@ class ParseXML:
 
 
 if __name__ == "__main__":
-    input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz22"
+    input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
     process = ParseXML(input_file)
     process.revision_df.show()
     # process.article_df.show()
