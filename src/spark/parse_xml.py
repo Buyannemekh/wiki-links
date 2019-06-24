@@ -20,7 +20,7 @@ class ParseXML:
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
-        page_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_title).load(self.file)
+        page_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_title).load(self.file).persist()
         df = page_df.select(f.col('id'), f.col('revision.text'), f.col('revision.timestamp'))
         df = df.withColumn("time", df.timestamp.cast(TimestampType()))
         return df
