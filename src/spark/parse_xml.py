@@ -42,9 +42,11 @@ class ParseXML:
 def find_links(text):
     try:
         match_list = re.findall('\[\[[^\[\]]+\]\]', text[0])
-        return match_list
+        link_list = map(lambda x: x[2:-2], match_list)
+        return list(link_list)
     except:
         return []
+
 
 if __name__ == "__main__":
     input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
