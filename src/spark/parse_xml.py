@@ -20,8 +20,7 @@ class ParseXML:
     def get_page_df_from_xml(self):
         page_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_title).load(self.file)
         df = page_df.select(f.col('id'), f.col('revision.text'), f.col('revision.timestamp'))
-        df = df.withColumn("time", df.timestamp.cast(TimestampType()).
-                           drop("timestamp").withColumnRenamed("time", "timestamp"))
+        df = df.withColumn("time", df.timestamp.cast(TimestampType()).drop("timestamp").withColumnRenamed("time", "timestamp"))
         return df
 
 
