@@ -23,10 +23,27 @@ class ParseXML:
         df = df.withColumn("time", df.timestamp.cast(TimestampType()))
         return df
 
+    # extract links from the text and create data frame with list of link titles
+    def create_df_of_links(self):
+        df_text = self.page_df.select('text')
+        find_links_udf = udf(find_links, ArrayType(StringType()))
+        df_links = df_text.withColumn('links', find_links_udf(df_text.text))
+        df_links.where(df_links.links.isNotNull()).show()
+        return df_links
+
+
+# return list of link titles from a text if exist, else return empty list
+def find_links(text):
+    try:
+        match_list = re.findall('\[\[[^\[\]]+\]\]', text[0])
+        return match_list
+    except:
+        return []
 
 if __name__ == "__main__":
     input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
     process = ParseXML(input_file)
     process.page_df.printSchema()
     process.page_df.show()
+    process.create_df_of_links()
 
