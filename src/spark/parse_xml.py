@@ -14,8 +14,9 @@ class ParseXML:
         self.format = "xml"
         self.row_tag_revision = "revision"
         self.row_tag_title = 'page'
-        self.page_df = self.get_page_df_from_xml()
-        self.page_df_with_links = self.create_df_of_links()
+        self.page_df_text = self.get_page_df_from_xml()  # data frame with text
+        self.page_df_links = self.create_df_of_links()   # data frame with links
+        self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
@@ -27,13 +28,13 @@ class ParseXML:
     # extract links from the text and create data frame with list of link titles
     def create_df_of_links(self):
         find_links_udf = udf(find_links, ArrayType(StringType()))
-        df_links = self.page_df.withColumn('links', find_links_udf(self.page_df.text))
+        df_links = self.page_df_text.withColumn('links', find_links_udf(self.page_df_text.text))
         df_links.printSchema()
         df_links.where(df_links.links.isNotNull()).show()
         return df_links
 
     def explode_links(self):
-        df = self.page_df_with_links.withColumn("link", explode(self.page_df_with_links.links))
+        df = self.page_df_links.withColumn("link", explode(self.page_df_links.links))
         df_id_link_time = df.select(f.col('id'), f.col('time'), f.col('link'))
         return df_id_link_time
 
@@ -51,8 +52,7 @@ def find_links(text):
 if __name__ == "__main__":
     input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
     process = ParseXML(input_file)
-    process.page_df.printSchema()
-    process.page_df.show()
-    df_link = process.explode_links()
-    df_link.show()
-
+    process.page_df_text.printSchema()
+    process.page_df_text.show()
+    process.page_df_links.show()
+    process.page_df_id_link_time.show()
