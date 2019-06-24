@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
+from pyspark.sql import functions as f
 from pyspark.sql.functions import explode
 from pyspark.sql.functions import udf
 from pyspark.sql.functions import col, count
@@ -30,8 +31,7 @@ class ParseXML:
 
         article_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_title).load(self.file)
         article_df.printSchema()
-
-        article_df.selectExpr("explode(revision.text.*) as t").select("t").show(100)
+        article_df.select(f.col('revision.*')).show(truncate=False)
         return article_df
 
 
