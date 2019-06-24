@@ -27,10 +27,11 @@ class ParseXML:
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
+
         article_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_title).load(self.file)
         article_df.printSchema()
 
-        article_df.selectExpr("explode(revision.text) as t").select("t").show(100)
+        article_df.selectExpr("explode(revision.text.*) as t").select("t").show(100)
         return article_df
 
 
