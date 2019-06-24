@@ -14,7 +14,7 @@ class ParseXML:
         self.row_tag_revision = "revision"
         self.row_tag_title = 'page'
         self.revision_df = self.get_revision_df_from_xml()
-        # self.article_df = self.get_page_df_from_xml()
+        self.article_df = self.get_page_df_from_xml()
         # self.df_link_count = None
 
     # parse xml and extract information under revision tag
@@ -28,6 +28,7 @@ class ParseXML:
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
         article_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_title).load(self.file)
+        article_df.printSchema()
         return article_df
 
 
