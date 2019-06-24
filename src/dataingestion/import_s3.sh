@@ -1,5 +1,5 @@
 while read p; do
     export NAME=${p/https:\/\/dumps.wikimedia.org\/enwiki\/latest\/enwiki-latest-pages-meta-/}
     # echo $NAME
-    curl "$p" | aws s3 cp - s3://wiki-meta-history/"$NAME";
-done < http_bz2_links.txt
+    curl "$p" | aws s3 cp - s3://wiki-history/"$NAME";
+done < http_bz2_simple.txt
