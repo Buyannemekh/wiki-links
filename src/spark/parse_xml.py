@@ -25,9 +25,10 @@ class ParseXML:
 
     # extract links from the text and create data frame with list of link titles
     def create_df_of_links(self):
-        df_text = self.page_df.select('text')
+        #df_text = self.page_df.select('text')
         find_links_udf = udf(find_links, ArrayType(StringType()))
-        df_links = df_text.withColumn('links', find_links_udf(df_text.text))
+        df_links = self.page_df.withColumn('links', find_links_udf(self.page_df.text))
+        df_links.printSchema()
         df_links.where(df_links.links.isNotNull()).show()
         return df_links
 
