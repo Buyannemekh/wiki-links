@@ -49,7 +49,7 @@ def find_links(text):
 
 
 if __name__ == "__main__":
-    input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
+    input_file = "s3a://wiki-history/history1.xml-p10572p11357.bz2"
     process = ParseXML(input_file)
     process.page_df_text.printSchema()
     process.page_df_text.show()
