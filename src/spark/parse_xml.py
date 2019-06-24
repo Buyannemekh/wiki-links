@@ -30,7 +30,7 @@ class ParseXML:
         article_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_title).load(self.file)
         article_df.printSchema()
 
-        article_df.selectExpr("explode(revision.text) as revision-text").select("revision-text").show(100)
+        article_df.selectExpr("explode(revision.text) as t").select("t").show(100)
         return article_df
 
 
