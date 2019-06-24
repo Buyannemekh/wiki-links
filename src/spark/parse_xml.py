@@ -14,27 +14,17 @@ class ParseXML:
         self.format = "xml"
         self.row_tag_revision = "revision"
         self.row_tag_title = 'page'
-        self.revision_df = self.get_revision_df_from_xml()
-        self.article_df = self.get_page_df_from_xml()
-        # self.df_link_count = None
-
-    # parse xml and extract information under revision tag
-    def get_revision_df_from_xml(self):
-        revision_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_revision).load(self.file)
-        # convert time string to timestamp
-        df = revision_df.withColumn("time", revision_df.timestamp.cast(TimestampType()))
-        df.printSchema()
-        return df
+        self.page_df = self.get_page_df_from_xml()
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
-
-        article_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_title).load(self.file)
-        article_df.printSchema()
-        article_df.show()
-        df = article_df.select(f.col('id'), f.col('revision.text'), f.col('revision.timestamp'))
+        page_df = self.spark.read.format(self.format).options(rowTag=self.row_tag_title).load(self.file)
+        page_df.printSchema()
+        page_df.show()
+        df = page_df.select(f.col('id'), f.col('revision.text'), f.col('revision.timestamp'))
+        df = df.withColumn("time", df.timestamp.cast(TimestampType()))
         df.show()
-        return article_df
+        return df
 
 
 if __name__ == "__main__":
