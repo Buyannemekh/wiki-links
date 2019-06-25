@@ -16,7 +16,7 @@ class ParseXML:
         self.row_tag_title = 'page'
         self.page_df_text = self.get_page_df_from_xml()  # data frame with text
         self.page_df_links = self.create_df_of_links()   # data frame with links
-        # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
+        self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
@@ -56,4 +56,5 @@ if __name__ == "__main__":
     process.page_df_links.where(process.page_df_links.links.isNotNull()).show()
     process.page_df_links.select(f.col("links")).show()
     print(process.page_df_links.count(), len(process.page_df_links.columns))
-    # process.page_df_id_link_time.show()
+    process.page_df_id_link_time.show()
+    print(process.page_df_id_link_time.count(), len(process.page_df_id_link_time.columns))
