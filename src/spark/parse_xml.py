@@ -101,4 +101,4 @@ if __name__ == "__main__":
     print_df_count(process.page_df_id_link_time)
     print_df_count(process.df_earliest_timestamp)
 
-    print_df_count(df_id_link_count)
+   # print_df_count(df_id_link_count)
