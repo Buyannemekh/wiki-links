@@ -26,7 +26,7 @@ class ParseXML:
 
         page_df = self.spark.read\
             .format(self.format)\
-            .options(rowTag=self.row_tag_id, rootTag=self.row_tag_page)\
+            .options(rowTag=self.row_tag_page)\
             .load(self.file)\
             .persist()
 
