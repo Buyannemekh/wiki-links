@@ -55,4 +55,5 @@ if __name__ == "__main__":
     process.page_df_text.show()
     process.page_df_links.where(process.page_df_links.links.isNotNull()).show()
     process.page_df_links.select(f.col("links")).show()
+    print(process.page_df_links.count(), len(process.page_df_links.columns))
     # process.page_df_id_link_time.show()
