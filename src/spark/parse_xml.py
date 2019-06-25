@@ -16,9 +16,9 @@ class ParseXML:
         self.row_tag_revision = "revision"
         self.row_tag_page = 'page'
         self.page_df_text = self.get_page_df_from_xml()  # data frame with text
-        # self.page_df_links = self.create_df_of_links()   # data frame with links
-        # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
-        # self.df_earliest_timestamp = self.group_by_id_link()  # find the earliest timestamp for a link in an article
+        self.page_df_links = self.create_df_of_links()   # data frame with links
+        self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
+        self.df_earliest_timestamp = self.group_by_id_link()  # find the earliest timestamp for a link in an article
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
@@ -29,13 +29,13 @@ class ParseXML:
             .load(self.file)\
             .persist()
 
-        # # create df with article id, text, and revision timestamp
-        # df_id_text_time = page_df.select(f.col('id'),
-        #                                  f.col('revision.text'),
-        #                                  f.col('revision.timestamp'))
-        #
-        # # cast timestamp as timestamp type for future query
-        # df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
+        # create df with article id, text, and revision timestamp
+        df_id_text_time = page_df.select(f.col('id'),
+                                         f.col('revision.text'),
+                                         f.col('revision.timestamp'))
+
+        # cast timestamp as timestamp type for future query
+        df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
 
         return page_df
 
@@ -93,12 +93,12 @@ def print_df_count(df):
 
 
 if __name__ == "__main__":
-    input_file = "s3a://wiki-history/history1.xml-p10572p11357.bz2"
+    input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
     process = ParseXML(input_file)
 
-    # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
+    df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
-    # print_df_count(process.page_df_id_link_time)
-    # print_df_count(process.df_earliest_timestamp)
+    print_df_count(process.page_df_id_link_time)
+    print_df_count(process.df_earliest_timestamp)
 
    # print_df_count(df_id_link_count)
