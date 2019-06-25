@@ -17,6 +17,7 @@ class ParseXML:
         self.page_df_text = self.get_page_df_from_xml()  # data frame with text
         self.page_df_links = self.create_df_of_links()   # data frame with links
         self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
+        self.link_df_min_timestamp = self.group_by_id_link()
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
@@ -36,6 +37,10 @@ class ParseXML:
         df = self.page_df_links.withColumn("link", explode(self.page_df_links.links))
         df_id_link_time = df.select(f.col('id'), f.col('time'), f.col('link'))
         return df_id_link_time
+
+    def group_by_id_link(self):
+        df = self.page_df_id_link_time.groupby("id", "link").agg(min("time"))
+        return df
 
 
 # return list of link titles from a text if exist, else return empty list
@@ -58,3 +63,5 @@ if __name__ == "__main__":
     print(process.page_df_links.count(), len(process.page_df_links.columns))
     process.page_df_id_link_time.show()
     print(process.page_df_id_link_time.count(), len(process.page_df_id_link_time.columns))
+    process.link_df_min_timestamp.show()
+    print(process.link_df_min_timestamp.count(), len(process.link_df_min_timestamp.columns))
