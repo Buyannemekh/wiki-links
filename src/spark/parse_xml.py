@@ -23,12 +23,12 @@ class ParseXML:
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
+        customSchema = StructType([StructField("id", IntegerType(), True)])
 
         page_df = self.spark.read\
             .format(self.format)\
             .options(rowTag=self.row_tag_page)\
-            .load(self.file)\
-            .persist()
+            .load(self.file, schema=customSchema)
 
         page_df.printSchema()
         page_df.show()
