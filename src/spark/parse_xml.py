@@ -36,6 +36,7 @@ class ParseXML:
 
         page_df.printSchema()
         page_df.show()
+        page_df.withColumn("text", explode(page_df.revision))
 
         # xmlDF.withColumn("xmlcomment", explode(
         #     sqlContext.read.format("com.databricks.spark.xml").option("rowTag", "book").load($"xmlcomment")))
