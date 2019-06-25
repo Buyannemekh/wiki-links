@@ -14,7 +14,7 @@ class ParseXML:
         self.spark = SparkSession.builder.getOrCreate()
         self.format = "xml"
         self.row_tag_revision = "revision"
-        self.row_tag_title = 'page'
+        self.row_tag_page = 'page'
         self.page_df_text = self.get_page_df_from_xml()  # data frame with text
         # self.page_df_links = self.create_df_of_links()   # data frame with links
         # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
@@ -25,7 +25,7 @@ class ParseXML:
 
         page_df = self.spark.read\
             .format(self.format)\
-            .options(rowTag=self.row_tag_revision)\
+            .options(rowTag=self.row_tag_page)\
             .load(self.file)\
             .persist()
 
