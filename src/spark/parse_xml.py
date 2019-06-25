@@ -86,8 +86,8 @@ class ParseXML:
 
     # when multiple revisions, find the earliest creation date for a link in an article
     def group_by_id_link(self):
-        df_earliest_timestamp = self.page_df_id_link_time.groupby("id", "link").agg(f.min("time"))
-        df = df_earliest_timestamp.selectExpr("id as article_id", "link as link_name", "min(time) as first_time_stamp")
+        df_earliest_timestamp = self.page_df_id_link_time.groupby("id", "link").agg(f.min("time").alias("time"))
+        df = df_earliest_timestamp.selectExpr("id as article_id", "link as link_name", "time as first_time_stamp")
         return df
 
 
