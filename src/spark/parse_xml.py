@@ -23,12 +23,12 @@ class ParseXML:
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
-        # customSchema = StructType([StructField("id", IntegerType(), True),
-        #                            StructField("revision",
-        #                                        StructType([StructField("id", IntegerType(), True)]), True),
-        #                            ])
+        customSchema = StructType([StructField("id", IntegerType(), True),
+                                   StructField("revision",
+                                               StructType([StructField("id", IntegerType(), True)]), True),
+                                   ])
 
-        customSchema = StructType([StructField("id", IntegerType(), True)])
+        # customSchema = StructType([StructField("id", IntegerType(), True)])
 
         page_df = self.spark.read\
             .format(self.format)\
@@ -128,7 +128,7 @@ def write_to_postgres(df_link_count, jdbc_url):
 
 
 if __name__ == "__main__":
-    input_file = "s3a://wiki-history/history1.xml-p10572p11357.bz2"
+    input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
     process = ParseXML(input_file)
     process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
