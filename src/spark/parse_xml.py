@@ -92,6 +92,23 @@ def print_df_count(df):
     df.show()
 
 
+# write link and count data frame from spark to postgres
+def write_to_postgres(df_link_count, jdbc_url):
+    connection_properties = {
+        "user": "postgres",
+        "password": "$password",
+        "driver": "org.postgresql.Driver"
+    }
+
+    df_link_count.select('id', 'link', 'min(time)').\
+        write.jdbc(url=jdbc_url,
+                   table='links',
+                   properties=connection_properties,
+                   mode='append')
+
+    print("POSTGRESQL DONE")
+
+
 if __name__ == "__main__":
     input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
     process = ParseXML(input_file)
@@ -101,4 +118,9 @@ if __name__ == "__main__":
     print_df_count(process.page_df_id_link_time)
     print_df_count(process.df_earliest_timestamp)
 
-   # print_df_count(df_id_link_count)
+    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    database = "test"
+    port = "5432"
+    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    write_to_postgres(df_link_count=process.df_earliest_timestamp, jdbc_url=url)
+
