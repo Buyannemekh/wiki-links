@@ -39,7 +39,7 @@ class ParseXML:
         return df_id_link_time
 
     def group_by_id_link(self):
-        df = self.page_df_id_link_time.groupby("id", "link").agg(min("time"))
+        df = self.page_df_id_link_time.groupby("id", "link").agg(f.min("time"))
         return df
 
 
