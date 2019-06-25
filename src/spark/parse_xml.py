@@ -122,7 +122,7 @@ def write_to_postgres(df_link_count, jdbc_url):
 
 
 if __name__ == "__main__":
-    input_file = "s3n://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
+    input_file = "s3n://wiki-history/history1.xml-p10572p11357.bz2"
     process = ParseXML(input_file)
     process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
