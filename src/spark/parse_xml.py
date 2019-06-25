@@ -94,9 +94,9 @@ if __name__ == "__main__":
     input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
     process = ParseXML(input_file)
 
-    df_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
+    df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
     print_df_count(process.page_df_id_link_time)
     print_df_count(process.df_earliest_timestamp)
 
-    # print_df_count(df_count)
+    print_df_count(df_id_link_count)
