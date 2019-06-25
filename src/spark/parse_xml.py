@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from pyspark.sql import functions as f
+from pyspark.sql.functions import desc
 from pyspark.sql.functions import explode
 from pyspark.sql.functions import udf
 from pyspark.sql.functions import col, count
@@ -39,6 +40,8 @@ class ParseXML:
         return df_id_link_time
 
     def group_by_id_link(self):
+        df_count = self.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
+        df_count.show()
         df = self.page_df_id_link_time.groupby("id", "link").agg(f.min("time"))
         return df
 
