@@ -16,10 +16,10 @@ class ParseXML:
         self.row_tag_revision = "revision"
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
-        self.page_df_text = self.get_page_df_from_xml()  # data frame with text
-        self.page_df_links = self.create_df_of_links()   # data frame with links
-        self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
-        self.df_earliest_timestamp = self.group_by_id_link()  # find the earliest timestamp for a link in an article
+        # self.page_df_text = self.get_page_df_from_xml()  # data frame with text
+        # self.page_df_links = self.create_df_of_links()   # data frame with links
+        # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
+        # self.df_earliest_timestamp = self.group_by_id_link()  # find the earliest timestamp for a link in an article
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
@@ -28,17 +28,17 @@ class ParseXML:
         #                                        StructType([StructField("id", IntegerType(), True)]), True),
         #                            ])
 
-        # customSchema = StructType([StructField("id", IntegerType(), True)])
-
-        # page_df = self.spark.read\
-        #     .format(self.format)\
-        #     .options(rowTag=self.row_tag_page)\
-        #     .load(self.file, schema=customSchema)
+        customSchema = StructType([StructField("id", IntegerType(), True)])
 
         page_df = self.spark.read\
             .format(self.format)\
             .options(rowTag=self.row_tag_page)\
-            .load(self.file)
+            .load(self.file, schema=customSchema)
+        #
+        # page_df = self.spark.read\
+        #     .format(self.format)\
+        #     .options(rowTag=self.row_tag_page)\
+        #     .load(self.file)
 
         page_df.printSchema()
         page_df.show()
@@ -47,14 +47,14 @@ class ParseXML:
         #     sqlContext.read.format("com.databricks.spark.xml").option("rowTag", "book").load($"xmlcomment")))
 
         # create df with article id, text, and revision timestamp
-        df_id_text_time = page_df.select(f.col('id'),
-                                         f.col('revision.text'),
-                                         f.col('revision.timestamp'))
+        # df_id_text_time = page_df.select(f.col('id'),
+        #                                  f.col('revision.text'),
+        #                                  f.col('revision.timestamp'))
+        #
+        # # cast timestamp as timestamp type for future query
+        # df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
 
-        # cast timestamp as timestamp type for future query
-        df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
-
-        return df_id_text_time
+        return page_df
 
     # extract links from the text and create data frame with list of link titles
     def create_df_of_links(self):
@@ -130,11 +130,11 @@ def write_to_postgres(df_link_count, jdbc_url):
 if __name__ == "__main__":
     input_file = "s3a://wiki-history/history1.xml-p10572p11357.bz2"
     process = ParseXML(input_file)
-    # process.get_page_df_from_xml()
+    process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
-    print_df_count(process.page_df_id_link_time)
-    print_df_count(process.df_earliest_timestamp)
+    # print_df_count(process.page_df_id_link_time)
+    # print_df_count(process.df_earliest_timestamp)
 
     # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
     # database = "test"
