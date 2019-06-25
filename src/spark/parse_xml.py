@@ -78,7 +78,9 @@ def find_links(text):
     try:
         match_list = re.findall('\[\[[^\[\]]+\]\]', text[0])
         link_list = map(lambda x: x[2:-2], match_list)
-        return list(link_list)
+        sub = "User:"
+        link_list_no_user = [link for link in link_list if not sub in link]
+        return list(link_list_no_user)
     except:
         return []
 
