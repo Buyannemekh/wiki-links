@@ -37,7 +37,7 @@ class ParseXML:
         # cast timestamp as timestamp type for future query
         df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
 
-        return page_df
+        return df_id_text_time
 
     # extract links from the text and create data frame with list of link titles
     def create_df_of_links(self):
