@@ -128,7 +128,7 @@ def write_to_postgres(df_link_count, jdbc_url):
 
 
 if __name__ == "__main__":
-    input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
+    input_file = "s3a://wiki-history/history1.xml-p10572p11357.bz2"
     process = ParseXML(input_file)
     # process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
@@ -136,9 +136,9 @@ if __name__ == "__main__":
     print_df_count(process.page_df_id_link_time)
     print_df_count(process.df_earliest_timestamp)
 
-    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    database = "test"
-    port = "5432"
-    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    write_to_postgres(df_link_count=process.df_earliest_timestamp, jdbc_url=url)
-
+    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    # database = "test"
+    # port = "5432"
+    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    # write_to_postgres(df_link_count=process.df_earliest_timestamp, jdbc_url=url)
+    #
