@@ -25,8 +25,7 @@ class ParseXML:
     def get_page_df_from_xml(self):
         customSchema = StructType([StructField("id", IntegerType(), True),
                                    StructField("revision",
-                                               StructType([StructField("text", StructType(), True),
-                                                           StructField("timestamp", StringType(), True)]),True),
+                                               StructType([StructField("id", IntegerType(), True)]), True),
                                    ])
 
         page_df = self.spark.read\
@@ -36,7 +35,6 @@ class ParseXML:
 
         page_df.printSchema()
         page_df.show()
-        page_df.withColumn("text", explode(page_df.revision))
 
         # xmlDF.withColumn("xmlcomment", explode(
         #     sqlContext.read.format("com.databricks.spark.xml").option("rowTag", "book").load($"xmlcomment")))
