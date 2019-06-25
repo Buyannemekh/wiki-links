@@ -24,7 +24,10 @@ class ParseXML:
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
         customSchema = StructType([StructField("id", IntegerType(), True),
-                                   StructField("revision", StructType(), True)])
+                                   StructField("revision",
+                                               StructType([StructField("text", StructType(), True),
+                                                           StructField("timestamp", StringType(), True)]),True),
+                                   ])
 
         page_df = self.spark.read\
             .format(self.format)\
@@ -33,6 +36,9 @@ class ParseXML:
 
         page_df.printSchema()
         page_df.show()
+
+        # xmlDF.withColumn("xmlcomment", explode(
+        #     sqlContext.read.format("com.databricks.spark.xml").option("rowTag", "book").load($"xmlcomment")))
 
         # # create df with article id, text, and revision timestamp
         # df_id_text_time = page_df.select(f.col('id'),
