@@ -29,8 +29,12 @@ class ParseXML:
 
         # customSchema = StructType([StructField("id", IntegerType(), True)])
 
+        # .option("excludeAttribute", "false")
+        # .option("rowTag", "elem")
+
         page_df = self.spark.read\
-            .format(self.format)\
+            .format(self.format) \
+            .option("excludeAttribute", "false")\
             .options(rowTag=self.row_tag_page)\
             .load(self.file, schema= customSchema)
 
@@ -39,7 +43,8 @@ class ParseXML:
         page_df.show()
 
         revision_df = self.spark.read\
-            .format(self.format)\
+            .format(self.format) \
+            .option("excludeAttribute", "false") \
             .options(rowTag=self.row_tag_revision)\
             .load(self.file)
 
