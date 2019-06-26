@@ -110,13 +110,15 @@ class ParseXML:
 
 # return list of link titles from a text if exist, else return empty list
 def find_links(text):
+    sub_list = ["User:", "User talk:", "File:", "Wikipedia:", "WP:"]
     import re
     try:
         match_list = re.findall('\[\[[^\[\]]+\]\]', text[0])
-        link_list = map(lambda x: x[2:-2], match_list)
-        sub = "User:"
-        link_list_no_user = [link for link in link_list if not sub in link]
-        return list(link_list_no_user)
+        link_names = map(lambda x: x[2:-2], match_list)
+        all_links = list(link_names)
+        # link_list_no_user = [link for link in link_list if not sub in link]
+        valid_links = [link for link in all_links if not any(sub in link for sub in sub_list)]
+        return valid_links
     except:
         return []
 
