@@ -45,20 +45,21 @@ class ParseXML:
 
         revision_df.printSchema()
         print(revision_df.count(), len(revision_df.columns))
-        revision_df.show(n=100)
+
 
         # xmlDF.withColumn("xmlcomment", explode(
         #     sqlContext.read.format("com.databricks.spark.xml").option("rowTag", "book").load($"xmlcomment")))
 
         # create df with article id, text, and revision timestamp
-        # df_id_text_time = page_df.select(f.col('id'),
-        #                                  f.col('revision.text'),
-        #                                  f.col('revision.timestamp'))
-        #
-        # # cast timestamp as timestamp type for future query
-        # df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
+        df_id_text_time = revision_df.select(f.col('parentid'),
+                                             f.col('text'),
+                                             f.col('timestamp'))
 
-        return revision_df
+        # cast timestamp as timestamp type for future query
+        df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
+        df_id_text_time.show(n=100)
+
+        return df_id_text_time
 
     # extract links from the text and create data frame with list of link titles
     def create_df_of_links(self):
