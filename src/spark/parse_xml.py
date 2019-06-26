@@ -31,22 +31,22 @@ class ParseXML:
 
         # .option("excludeAttribute", "false")
         # .option("rowTag", "elem")
-
-        page_df = self.spark.read\
-            .format(self.format) \
-            .option("excludeAttribute", "false")\
-            .options(rowTag=self.row_tag_page)\
-            .load(self.file)
-
-        page_df.printSchema()
-        print(page_df.count(), len(page_df.columns))
-        page_df.show()
+        #
+        # page_df = self.spark.read\
+        #     .format(self.format) \
+        #     .option("excludeAttribute", "false")\
+        #     .options(rowTag=self.row_tag_page)\
+        #     .load(self.file)
+        #
+        # page_df.printSchema()
+        # print(page_df.count(), len(page_df.columns))
+        # page_df.show()
 
         # page_df.selectExpr("explode(revision.id) as rev")\
         #     .select("rev").show(100)
 
-        revision_df_id = page_df.select(f.col('id'), f.col('revision.id'))
-        revision_df_id.show()
+        # revision_df_id = page_df.select(f.col('id'), f.col('revision.id'))
+        # revision_df_id.show()
 
         revision_df = self.spark.read\
             .format(self.format) \
@@ -59,11 +59,9 @@ class ParseXML:
         revision_df.show()
 
 
-        # xmlDF.withColumn("xmlcomment", explode(
-        #     sqlContext.read.format("com.databricks.spark.xml").option("rowTag", "book").load($"xmlcomment")))
-
         # create df with article id, text, and revision timestamp
-        # df_id_text_time = revision_df.select(f.col('parentid'),
+        # df_id_text_time = revision_df.select(f.col('id'),
+        #                                      f.col('parentid'),
         #                                      f.col('text'),
         #                                      f.col('timestamp'))
         #
@@ -150,7 +148,7 @@ if __name__ == "__main__":
     medium_file = "s3a://wiki-history/history18.xml-p13693074p13784345.bz2"  # 800mb
     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
     small_rev_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799rev"
-    current_file = "s3a://wiki-meta/meta-current_test1.xml.bz2"
+    current_file = "s3a://wiki-meta/meta-current1.xml.bz2"  #200mb
 
     process = ParseXML(current_file)
     process.get_page_df_from_xml()
