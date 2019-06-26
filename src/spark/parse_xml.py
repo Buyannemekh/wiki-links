@@ -45,7 +45,7 @@ class ParseXML:
 
         revision_df.printSchema()
         print(revision_df.count(), len(revision_df.columns))
-        revision_df.show()
+        revision_df.show(n=100)
 
         # xmlDF.withColumn("xmlcomment", explode(
         #     sqlContext.read.format("com.databricks.spark.xml").option("rowTag", "book").load($"xmlcomment")))
@@ -137,7 +137,7 @@ if __name__ == "__main__":
     medium_file = "s3://wiki-history/history18.xml-p13693074p13784345.bz2"  # 800mb
     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
 
-    process = ParseXML(medium_file)
+    process = ParseXML(small_file)
     process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
