@@ -147,7 +147,7 @@ def write_to_postgres(df_link_count, jdbc_url):
         "driver": "org.postgresql.Driver"
     }
 
-    df_link_count.select('revision_id', 'link_name', 'time_stamp').\
+    df_link_count.select('revision_id', 'link_name', 'time_stamp', 'link_count').\
         write.jdbc(url=jdbc_url,
                    table='links',
                    properties=connection_properties,
@@ -175,9 +175,9 @@ if __name__ == "__main__":
     print_df_count(df_count_links)
 
 
-    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    # database = "wikicurrent"
-    # port = "5432"
-    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    # write_to_postgres(df_link_count=process.page_df_id_link_time, jdbc_url=url)
-    #
+    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    database = "wikicurrent"
+    port = "5432"
+    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    write_to_postgres(df_link_count=process.page_df_id_link_time, jdbc_url=url)
+
