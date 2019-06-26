@@ -54,10 +54,6 @@ class ParseXML:
             .options(rowTag=self.row_tag_revision)\
             .load(self.file)
 
-        revision_df.printSchema()
-        print(revision_df.count(), len(revision_df.columns))
-        revision_df.show()
-
         # create df with article id, text, and revision timestamp
         df_id_text_time = revision_df.select(f.col('contributor'),
                                              f.col('id'),
@@ -68,6 +64,8 @@ class ParseXML:
 
         # cast timestamp as timestamp type for future query
         df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
+        df_id_text_time.printSchema()
+        print(df_id_text_time.count(), len(df_id_text_time.columns))
         df_id_text_time.show(n=100)
 
         return df_id_text_time
@@ -98,6 +96,9 @@ class ParseXML:
                                                       f.col('time'),
                                                       f.col('link'))
 
+        page_df_id_link_time = page_df_id_link_time.selectExpr("id as revision_id",
+                                                               "link as link_name",
+                                                               "time as time_stamp")
         return page_df_id_link_time
 
     # when multiple revisions, find the earliest creation date for a link in an article
@@ -159,9 +160,9 @@ if __name__ == "__main__":
     print_df_count(process.page_df_links)
     print_df_count(process.page_df_id_link_time)
 
-    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    # database = "test"
-    # port = "5432"
-    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    # write_to_postgres(df_link_count=process.df_earliest_timestamp, jdbc_url=url)
-    #
+    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    database = "test"
+    port = "5432"
+    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    write_to_postgres(df_link_count=process.page_df_id_link_time, jdbc_url=url)
+
