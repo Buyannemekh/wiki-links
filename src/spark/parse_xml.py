@@ -179,5 +179,5 @@ if __name__ == "__main__":
     database = "wikicurrent"
     port = "5432"
     url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    write_to_postgres(df_link_count=process.page_df_id_link_time, jdbc_url=url)
+    write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
 
