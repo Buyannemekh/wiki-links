@@ -15,9 +15,9 @@ class ParseXML:
         self.row_tag_revision = "revision"
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
-        # self.page_df_text = self.get_page_df_from_xml()  # data frame with text
-        # self.page_df_links = self.create_df_of_links()   # data frame with links
-        # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
+        self.page_df_text = self.get_page_df_from_xml()  # data frame with text
+        self.page_df_links = self.create_df_of_links()   # data frame with links
+        self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
         # self.df_earliest_timestamp = self.group_by_id_link()  # find the earliest timestamp for a link in an article
 
     # parse xml and extract information under revision tag
@@ -58,7 +58,6 @@ class ParseXML:
         print(revision_df.count(), len(revision_df.columns))
         revision_df.show()
 
-
         # create df with article id, text, and revision timestamp
         df_id_text_time = revision_df.select(f.col('contributor'),
                                              f.col('id'),
@@ -71,7 +70,7 @@ class ParseXML:
         df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
         df_id_text_time.show(n=100)
 
-        return revision_df
+        return df_id_text_time
 
     # extract links from the text and create data frame with list of link titles
     def create_df_of_links(self):
@@ -154,11 +153,11 @@ if __name__ == "__main__":
     current_large_file = "s3://wiki-meta/meta-current27.xml.bz2"  #628mb
 
     process = ParseXML(current_large_file)
-    process.get_page_df_from_xml()
+    # process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
-    # print_df_count(process.page_df_id_link_time)
-    # print_df_count(process.df_earliest_timestamp)
+    print_df_count(process.page_df_links)
+    print_df_count(process.page_df_id_link_time)
 
     # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
     # database = "test"
