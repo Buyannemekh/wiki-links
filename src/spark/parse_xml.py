@@ -64,9 +64,9 @@ class ParseXML:
 
         # cast timestamp as timestamp type for future query
         df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
-        df_id_text_time.printSchema()
+         #df_id_text_time.printSchema()
         print(df_id_text_time.count(), len(df_id_text_time.columns))
-        df_id_text_time.show(n=100)
+       #  df_id_text_time.show(n=100)
 
         return df_id_text_time
 
