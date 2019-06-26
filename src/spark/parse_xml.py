@@ -60,14 +60,16 @@ class ParseXML:
 
 
         # create df with article id, text, and revision timestamp
-        # df_id_text_time = revision_df.select(f.col('id'),
-        #                                      f.col('parentid'),
-        #                                      f.col('text'),
-        #                                      f.col('timestamp'))
-        #
-        # # cast timestamp as timestamp type for future query
-        # df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
-        # df_id_text_time.show(n=100)
+        df_id_text_time = revision_df.select(f.col('contributor'),
+                                             f.col('id'),
+                                             f.col('model'),
+                                             f.col('parentid'),
+                                             f.col('text'),
+                                             f.col('timestamp'))
+
+        # cast timestamp as timestamp type for future query
+        df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
+        df_id_text_time.show(n=100)
 
         return revision_df
 
