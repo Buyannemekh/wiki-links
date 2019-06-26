@@ -36,7 +36,7 @@ class ParseXML:
             .format(self.format) \
             .option("excludeAttribute", "false")\
             .options(rowTag=self.row_tag_page)\
-            .load(self.file, schema= customSchema)
+            .load(self.file)
 
         page_df.printSchema()
         print(page_df.count(), len(page_df.columns))
