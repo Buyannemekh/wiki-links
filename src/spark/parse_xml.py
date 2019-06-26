@@ -29,14 +29,14 @@ class ParseXML:
 
         # customSchema = StructType([StructField("id", IntegerType(), True)])
 
-        # page_df = self.spark.read\
-        #     .format(self.format)\
-        #     .options(rowTag=self.row_tag_page)\
-        #     .load(self.file, schema=customSchema)
-        #
-        # page_df.printSchema()
-        # print(page_df.count(), len(page_df.columns))
-        # page_df.show()
+        page_df = self.spark.read\
+            .format(self.format)\
+            .options(rowTag=self.row_tag_page)\
+            .load(self.file)
+
+        page_df.printSchema()
+        print(page_df.count(), len(page_df.columns))
+        page_df.show()
 
         revision_df = self.spark.read\
             .format(self.format)\
@@ -135,10 +135,11 @@ def write_to_postgres(df_link_count, jdbc_url):
 
 if __name__ == "__main__":
     large_data = "s3a://wiki-history/history1.xml-p10572p11357.bz2"   # 2gb
-    medium_file = "s3://wiki-history/history18.xml-p13693074p13784345.bz2"  # 800mb
+    medium_file = "s3a://wiki-history/history18.xml-p13693074p13784345.bz2"  # 800mb
     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
+    small_rev_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799rev"
 
-    process = ParseXML(medium_file)
+    process = ParseXML(small_rev_file)
     process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
