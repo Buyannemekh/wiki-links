@@ -1,0 +1,16 @@
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current10.xml-p2336425p3046511.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current11.xml-p3046514p3926861.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current12.xml-p3926863p5040436.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current13.xml-p5040438p6197594.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current14.xml-p6197598p7697598.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current14.xml-p7697598p7744799.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current15.xml-p7744803p9244803.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current15.xml-p9244803p9518048.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current16.xml-p11018050p11539266.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current16.xml-p9518050p11018050.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current17.xml-p11539268p13039268.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current17.xml-p13039268p13693071.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current18.xml-p13693074p15193074.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current18.xml-p15193074p16120542.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current19.xml-p16120543p17620543.bz2
+https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current19.xml-p17620543p18754735.bz2

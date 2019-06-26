@@ -56,4 +56,3 @@ https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current6.xml-
 https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current7.xml-p892914p1268691.bz2
 https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current8.xml-p1268692p1791079.bz2
 https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current9.xml-p1791080p2336422.bz2
-https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-meta-current.xml.bz2
