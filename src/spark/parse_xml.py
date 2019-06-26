@@ -45,6 +45,8 @@ class ParseXML:
         page_df.selectExpr("explode(revision.id) as rev")\
             .select("rev").show(100)
 
+        page_df.select(f.col('id'), f.col('revision.id')).show()
+
         revision_df = self.spark.read\
             .format(self.format) \
             .option("excludeAttribute", "false") \
