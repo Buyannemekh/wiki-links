@@ -22,10 +22,10 @@ class ParseXML:
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
-        customSchema = StructType([StructField("id", IntegerType(), True),
-                                   StructField("revision",
-                                               StructType([StructField("id", IntegerType(), True)]), True),
-                                   ])
+        # customSchema = StructType([StructField("id", IntegerType(), True),
+        #                            StructField("revision",
+        #                                        StructType([StructField("id", IntegerType(), True)]), True),
+        #                            ])
 
         # customSchema = StructType([StructField("id", IntegerType(), True)])
 
@@ -38,14 +38,15 @@ class ParseXML:
             .options(rowTag=self.row_tag_page)\
             .load(self.file)
 
-        page_df.printSchema()
-        print(page_df.count(), len(page_df.columns))
-        page_df.show()
+        # page_df.printSchema()
+        # print(page_df.count(), len(page_df.columns))
+        # page_df.show()
 
-        page_df.selectExpr("explode(revision.id) as rev")\
-            .select("rev").show(100)
+        # page_df.selectExpr("explode(revision.id) as rev")\
+        #     .select("rev").show(100)
 
-        page_df.select(f.col('id'), f.col('revision.id')).show()
+        revision_df_id = page_df.select(f.col('id'), f.col('revision.id'))
+        revision_df_id.show()
 
         revision_df = self.spark.read\
             .format(self.format) \
@@ -149,7 +150,7 @@ if __name__ == "__main__":
     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
     small_rev_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799rev"
 
-    process = ParseXML(small_rev_file)
+    process = ParseXML(medium_file)
     process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
