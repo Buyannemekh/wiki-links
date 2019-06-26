@@ -151,8 +151,9 @@ if __name__ == "__main__":
     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
     small_rev_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799rev"
     current_file = "s3a://wiki-meta/meta-current1.xml.bz2"  #200mb
+    current_large_file = "s3://wiki-meta/meta-current27.xml.bz2"  #628mb
 
-    process = ParseXML(current_file)
+    process = ParseXML(current_large_file)
     process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
