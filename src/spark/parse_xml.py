@@ -167,9 +167,9 @@ if __name__ == "__main__":
     print_df_count(process.page_df_links)
     print_df_count(process.page_df_id_link_time)
 
-    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    # database = "wikicurrent"
-    # port = "5432"
-    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    # write_to_postgres(df_link_count=process.page_df_id_link_time, jdbc_url=url)
-    #
+    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    database = "wikicurrent"
+    port = "5432"
+    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    write_to_postgres(df_link_count=process.page_df_id_link_time, jdbc_url=url)
+
