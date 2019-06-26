@@ -22,21 +22,21 @@ class ParseXML:
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
-        customSchema = StructType([StructField("id", IntegerType(), True),
-                                   StructField("revision",
-                                               StructType([StructField("id", IntegerType(), True)]), True),
-                                   ])
+        # customSchema = StructType([StructField("id", IntegerType(), True),
+        #                            StructField("revision",
+        #                                        StructType([StructField("id", IntegerType(), True)]), True),
+        #                            ])
 
         # customSchema = StructType([StructField("id", IntegerType(), True)])
 
-        page_df = self.spark.read\
-            .format(self.format)\
-            .options(rowTag=self.row_tag_page)\
-            .load(self.file, schema=customSchema)
-
-        page_df.printSchema()
-        print(page_df.count(), len(page_df.columns))
-        page_df.show()
+        # page_df = self.spark.read\
+        #     .format(self.format)\
+        #     .options(rowTag=self.row_tag_page)\
+        #     .load(self.file, schema=customSchema)
+        #
+        # page_df.printSchema()
+        # print(page_df.count(), len(page_df.columns))
+        # page_df.show()
 
         revision_df = self.spark.read\
             .format(self.format)\
@@ -58,7 +58,7 @@ class ParseXML:
         # # cast timestamp as timestamp type for future query
         # df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
 
-        return page_df
+        return revision_df
 
     # extract links from the text and create data frame with list of link titles
     def create_df_of_links(self):
@@ -134,9 +134,9 @@ def write_to_postgres(df_link_count, jdbc_url):
 
 if __name__ == "__main__":
     large_data = "s3a://wiki-history/history1.xml-p10572p11357.bz2"
-    input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
+    small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
 
-    process = ParseXML(large_data)
+    process = ParseXML(small_file)
     process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
