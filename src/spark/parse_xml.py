@@ -62,15 +62,15 @@ class ParseXML:
         #     sqlContext.read.format("com.databricks.spark.xml").option("rowTag", "book").load($"xmlcomment")))
 
         # create df with article id, text, and revision timestamp
-        df_id_text_time = revision_df.select(f.col('parentid'),
-                                             f.col('text'),
-                                             f.col('timestamp'))
+        # df_id_text_time = revision_df.select(f.col('parentid'),
+        #                                      f.col('text'),
+        #                                      f.col('timestamp'))
+        #
+        # # cast timestamp as timestamp type for future query
+        # df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
+        # df_id_text_time.show(n=100)
 
-        # cast timestamp as timestamp type for future query
-        df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
-        df_id_text_time.show(n=100)
-
-        return df_id_text_time
+        return revision_df
 
     # extract links from the text and create data frame with list of link titles
     def create_df_of_links(self):
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
     small_rev_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799rev"
 
-    process = ParseXML(small_rev_file)
+    process = ParseXML(medium_file)
     process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
