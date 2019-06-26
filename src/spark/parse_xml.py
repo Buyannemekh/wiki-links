@@ -107,6 +107,11 @@ class ParseXML:
         df = df_earliest_timestamp.selectExpr("id as article_id", "link as link_name", "time as first_time_stamp")
         return df
 
+    def count_num_each_link_in_page(self):
+        df = self.page_df_id_link_time.groupby("revision_id", "link_name")\
+            .agg(f.count(f.lit(1)).alias("link_count"))
+        return df
+
 
 # return list of link titles from a text if exist, else return empty list
 def find_links(text):
@@ -115,14 +120,13 @@ def find_links(text):
     try:
         match_list = re.findall('\[\[[^\[\]]+\]\]', text[0])
         link_names = map(lambda x: x[2:-2], match_list)
-        # all_links = list(link_names)
+
         sub = ":"
         valid_links = [link for link in link_names if not sub in link]
 
         sep = "|"
         links_url_name = [link.split(sep, 1)[0] if sep in link else link for link in valid_links]
 
-        # valid_links = [link for link in all_links if not any(sub in link for sub in sub_list)]
         return links_url_name
     except:
         return []
@@ -167,9 +171,13 @@ if __name__ == "__main__":
     print_df_count(process.page_df_links)
     print_df_count(process.page_df_id_link_time)
 
-    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    database = "wikicurrent"
-    port = "5432"
-    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    write_to_postgres(df_link_count=process.page_df_id_link_time, jdbc_url=url)
+    df_count_links = process.count_num_each_link_in_page()
+    print_df_count(df_count_links)
 
+
+    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    # database = "wikicurrent"
+    # port = "5432"
+    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    # write_to_postgres(df_link_count=process.page_df_id_link_time, jdbc_url=url)
+    #
