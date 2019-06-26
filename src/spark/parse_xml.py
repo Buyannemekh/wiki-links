@@ -38,9 +38,9 @@ class ParseXML:
             .options(rowTag=self.row_tag_page)\
             .load(self.file)
 
-        # page_df.printSchema()
-        # print(page_df.count(), len(page_df.columns))
-        # page_df.show()
+        page_df.printSchema()
+        print(page_df.count(), len(page_df.columns))
+        page_df.show()
 
         # page_df.selectExpr("explode(revision.id) as rev")\
         #     .select("rev").show(100)
@@ -56,6 +56,7 @@ class ParseXML:
 
         revision_df.printSchema()
         print(revision_df.count(), len(revision_df.columns))
+        revision_df.show()
 
 
         # xmlDF.withColumn("xmlcomment", explode(
@@ -149,8 +150,9 @@ if __name__ == "__main__":
     medium_file = "s3a://wiki-history/history18.xml-p13693074p13784345.bz2"  # 800mb
     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
     small_rev_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799rev"
+    current_file = "s3a://wiki-meta/meta-current_test1.xml.bz2"
 
-    process = ParseXML(medium_file)
+    process = ParseXML(current_file)
     process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
