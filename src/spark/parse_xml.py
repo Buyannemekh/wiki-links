@@ -133,10 +133,11 @@ def write_to_postgres(df_link_count, jdbc_url):
 
 
 if __name__ == "__main__":
-    large_data = "s3a://wiki-history/history1.xml-p10572p11357.bz2"
-    small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
+    large_data = "s3a://wiki-history/history1.xml-p10572p11357.bz2"   # 2gb
+    medium_file = "s3://wiki-history/history18.xml-p13693074p13784345.bz2"  # 800mb
+    small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
 
-    process = ParseXML(small_file)
+    process = ParseXML(medium_file)
     process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
