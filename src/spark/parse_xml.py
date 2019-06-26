@@ -118,8 +118,12 @@ def find_links(text):
         # all_links = list(link_names)
         sub = ":"
         valid_links = [link for link in link_names if not sub in link]
+
+        sep = "|"
+        links_url_name = [link.split(sep, 1)[0] if sep in link else link for link in valid_links]
+
         # valid_links = [link for link in all_links if not any(sub in link for sub in sub_list)]
-        return valid_links
+        return links_url_name
     except:
         return []
 
