@@ -110,14 +110,15 @@ class ParseXML:
 
 # return list of link titles from a text if exist, else return empty list
 def find_links(text):
-    sub_list = ["User:", "User talk:", "File:", "Wikipedia:", "WP:"]
+    # sub_list = [":"]
     import re
     try:
         match_list = re.findall('\[\[[^\[\]]+\]\]', text[0])
         link_names = map(lambda x: x[2:-2], match_list)
-        all_links = list(link_names)
-        # link_list_no_user = [link for link in link_list if not sub in link]
-        valid_links = [link for link in all_links if not any(sub in link for sub in sub_list)]
+        # all_links = list(link_names)
+        sub = ":"
+        valid_links = [link for link in link_names if not sub in link]
+        # valid_links = [link for link in all_links if not any(sub in link for sub in sub_list)]
         return valid_links
     except:
         return []
@@ -155,16 +156,16 @@ if __name__ == "__main__":
     current_file = "s3a://wiki-meta/meta-current1.xml.bz2"  #200mb
     current_large_file = "s3://wiki-meta/meta-current27.xml.bz2"  #628mb
 
-    process = ParseXML(current_large_file)
+    process = ParseXML(current_file)
     # process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
     print_df_count(process.page_df_links)
     print_df_count(process.page_df_id_link_time)
 
-    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    database = "wikicurrent"
-    port = "5432"
-    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    write_to_postgres(df_link_count=process.page_df_id_link_time, jdbc_url=url)
-
+    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    # database = "wikicurrent"
+    # port = "5432"
+    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    # write_to_postgres(df_link_count=process.page_df_id_link_time, jdbc_url=url)
+    #
