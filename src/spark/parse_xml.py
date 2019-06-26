@@ -108,7 +108,7 @@ class ParseXML:
         return df
 
     def count_num_each_link_in_page(self):
-        df = self.page_df_id_link_time.groupby("revision_id", "link_name")\
+        df = self.page_df_id_link_time.groupby("revision_id", "link_name", "time_stamp")\
             .agg(f.count(f.lit(1)).alias("link_count"))
         return df
 
