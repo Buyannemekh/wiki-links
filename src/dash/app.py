@@ -25,14 +25,11 @@ sql_query_0 = "SELECT link, COUNT(*) FROM pages_links " + \
               "GROUP BY link ORDER BY COUNT(*) DESC LIMIT 20"
 
 query_results_0 = pd.read_sql_query(sql_query_0, con)
-print(query_results_0)
-revs_0 = []
-# for i in range(0, query_results_0.shape[0]):
-#     revs_0.append(dict(time=query_results_0.iloc[i]['time'], frequency=query_results_0.iloc[i]['frequency']))
+links = []
+for i in range(0, query_results_0.shape[0]):
+    links.append(dict(time=query_results_0.iloc[i]['link'], frequency=query_results_0.iloc[i]['count']))
 
-
-for i in range(0,query_results_0.shape[0]):
-    revs_0.append(dict(time=query_results_0.iloc[i]['time'], frequency=query_results_0.iloc[i]['frequency']))
+print(links)
 
 app.layout = html.Div(children=[
     html.H1(children='Wiki Links',
