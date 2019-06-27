@@ -25,15 +25,11 @@ import dash_html_components as html
 # print(links)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-
 app.layout = html.Div(children=[
-    html.H1(children='Wiki Links',
-            style={'textAlign': 'center',
-                   'margin-top': '80px',
-                   'margin-bottom': '80px'
-                   }),
+    html.H1(children='Hello Dash'),
 
     html.Div(children='''
         Dash: A web application framework for Python.
@@ -44,7 +40,7 @@ app.layout = html.Div(children=[
         figure={
             'data': [
                 {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
-                {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': 'Montréal'},
+                {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
             ],
             'layout': {
                 'title': 'Dash Data Visualization'
@@ -52,6 +48,9 @@ app.layout = html.Div(children=[
         }
     )
 ])
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
 
 #
 # app.layout = html.Div(children=[
