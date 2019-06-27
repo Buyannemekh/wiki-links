@@ -41,7 +41,7 @@ class ParseXML:
                                       f.col('revision.text'))
         page_df_text = page_df_text.withColumn("time_stamp", page_df_text.timestamp.cast(TimestampType()))
 
-        page_df_ns_0 = page_df.filter(page_df.ns==0)
+        page_df_ns_0 = page_df.filter(page_df.ns==0 & page_df.redirect=="null")
         print_df_count(page_df_ns_0)
 
         # revision_df_id.show()
