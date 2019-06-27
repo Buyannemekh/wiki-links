@@ -27,31 +27,6 @@ print(links)
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-# app.layout = html.Div(children=[
-#     html.H1(children='Wiki Links',
-#             style={'textAlign': 'center',
-#                    'margin-top': '80px',
-#                    'margin-bottom': '80px'
-#                    }),
-#
-#     html.Div(children='''
-#         Dash: A web application framework for Python.
-#     '''),
-#
-#     dcc.Graph(
-#         id='example-graph',
-#         figure={
-#             'data': [
-#                 {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
-#                 {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': 'Montréal'},
-#             ],
-#             'layout': {
-#                 'title': 'Dash Data Visualization'
-#             }
-#         }
-#     )
-# ])
-
 
 app.layout = html.Div(children=[
     html.H1(children='Wiki Links',
@@ -67,13 +42,39 @@ app.layout = html.Div(children=[
     dcc.Graph(
         id='example-graph',
         figure={
-            'data': [{'x': query_results_0['link'], 'y': query_results_0['count'], 'type': 'bar', 'name': 'Links'}],
+            'data': [
+                {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
+                {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': 'Montréal'},
+            ],
             'layout': {
-                'title': 'The most cited Wikipedia pages in the past month'
+                'title': 'Dash Data Visualization'
             }
         }
     )
 ])
+
+#
+# app.layout = html.Div(children=[
+#     html.H1(children='Wiki Links',
+#             style={'textAlign': 'center',
+#                    'margin-top': '80px',
+#                    'margin-bottom': '80px'
+#                    }),
+#
+#     html.Div(children='''
+#         Dash: A web application framework for Python.
+#     '''),
+#
+#     dcc.Graph(
+#         id='example-graph',
+#         figure={
+#             'data': [{'x': query_results_0['link'], 'y': query_results_0['count'], 'type': 'bar', 'name': 'Links'}],
+#             'layout': {
+#                 'title': 'The most cited Wikipedia pages in the past month'
+#             }
+#         }
+#     )
+# ])
 
 if __name__ == '__main__':
     app.run_server(debug=True)
