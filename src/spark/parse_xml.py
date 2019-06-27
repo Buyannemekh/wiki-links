@@ -18,7 +18,6 @@ class ParseXML:
         self.page_df_text = self.get_page_df_from_xml()  # data frame with text
         self.page_df_links = self.create_df_of_links()   # data frame with links
         self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
-        # # self.df_earliest_timestamp = self.group_by_id_link()  # find the earliest timestamp for a link in an article
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
@@ -27,23 +26,11 @@ class ParseXML:
         #                                        StructType([StructField("id", IntegerType(), True)]), True),
         #                            ])
 
-        # customSchema = StructType([StructField("id", IntegerType(), True)])
-
-        # .option("excludeAttribute", "false")
-        # .option("rowTag", "elem")
-        #
         page_df = self.spark.read\
             .format(self.format) \
             .option("excludeAttribute", "false")\
             .options(rowTag=self.row_tag_page)\
             .load(self.file)
-        #
-        # page_df.printSchema()
-        # print(page_df.count(), len(page_df.columns))
-        # page_df.show()
-
-        # page_df.selectExpr("explode(revision.id) as rev")\
-        #     .select("rev").show(100)
 
         revision_df_id = page_df.select(f.col('id').alias('page_id'),
                                         f.col('title').alias('page_title'),
@@ -51,6 +38,7 @@ class ParseXML:
                                         f.col('revision.timestamp'),
                                         f.col('revision.text'))
         revision_df_id = revision_df_id.withColumn("time", revision_df_id.timestamp.cast(TimestampType()))
+
         revision_df_id.show()
 
         # revision_df = self.spark.read\
@@ -110,15 +98,9 @@ class ParseXML:
         #                                                        "time as time_stamp")
         return page_df_id_link_time
 
-    # when multiple revisions, find the earliest creation date for a link in an article
-    def group_by_id_link(self):
-        df_earliest_timestamp = self.page_df_id_link_time.groupby("id", "link").agg(f.min("time").alias("time"))
-        df = df_earliest_timestamp.selectExpr("id as article_id", "link as link_name", "time as first_time_stamp")
-        return df
-
     def count_num_each_link_in_page(self):
-        df = self.page_df_id_link_time.groupby("revision_id", "link_name", "time_stamp")\
-            .agg(f.count(f.lit(1)).alias("link_count"))
+        df = self.page_df_id_link_time.groupby("page_id", "page_title", "revision_id", "link_name", "time").\
+            agg(f.count(f.lit(1)).alias("link_count"))
         return df
 
 
@@ -184,8 +166,8 @@ if __name__ == "__main__":
     print_df_count(process.page_df_links)
     print_df_count(process.page_df_id_link_time)
 
-    # df_count_links = process.count_num_each_link_in_page()
-    # print_df_count(df_count_links)
+    df_count_links = process.count_num_each_link_in_page()
+    print_df_count(df_count_links)
 
     # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
     # database = "wikicurrent"
