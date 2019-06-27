@@ -21,10 +21,6 @@ class ParseXML:
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
-        # customSchema = StructType([StructField("id", IntegerType(), True),
-        #                            StructField("revision",
-        #                                        StructType([StructField("id", IntegerType(), True)]), True),
-        #                            ])
 
         page_df = self.spark.read\
             .format(self.format) \
@@ -33,13 +29,6 @@ class ParseXML:
             .load(self.file)
 
         print_df_count(page_df)
-
-        # page_df_text = page_df.select(f.col('id').alias('page_id'),
-        #                               f.col('title').alias('page_title'),
-        #                               f.col('revision.id').alias("revision_id"),
-        #                               f.col('revision.timestamp'),
-        #                               f.col('revision.text'))
-        # page_df_text = page_df_text.withColumn("time_stamp", page_df_text.timestamp.cast(TimestampType()))
 
         # Filter only main articles by its namespace and pages that are not redirecting
         main_articles = page_df.filter((page_df.ns == 0) & (f.isnull('redirect')))
@@ -50,30 +39,9 @@ class ParseXML:
                                                   f.col('revision.id').alias("revision_id"),
                                                   f.col('revision.timestamp'),
                                                   f.col('revision.text'))
+
         main_articles_text = main_articles_text.withColumn("time_stamp", main_articles_text.timestamp.cast(TimestampType()))
         print_df_count(main_articles_text)
-
-        # revision_df_id.show()
-
-        # revision_df = self.spark.read\
-        #     .format(self.format) \
-        #     .option("excludeAttribute", "false") \
-        #     .options(rowTag=self.row_tag_revision)\
-        #     .load(self.file)
-        #
-        # # create df with article id, text, and revision timestamp
-        # df_id_text_time = revision_df.select(f.col('contributor'),
-        #                                      f.col('id'),
-        #                                      f.col('model'),
-        #                                      f.col('parentid'),
-        #                                      f.col('text'),
-        #                                      f.col('timestamp'))
-        #
-        # # cast timestamp as timestamp type for future query
-        # df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
-        # # df_id_text_time.printSchema()
-        # # print(df_id_text_time.count(), len(df_id_text_time.columns))
-        # df_id_text_time.show()
 
         return main_articles_text
 
@@ -107,9 +75,6 @@ class ParseXML:
                                                       f.col('time_stamp'),
                                                       f.col('link'))
 
-        # page_df_id_link_time = page_df_id_link_time.selectExpr("id as revision_id",
-        #                                                        "link as link_name",
-        #                                                        "time as time_stamp")
         return page_df_id_link_time
 
     def count_num_each_link_in_page(self):
