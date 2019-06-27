@@ -22,25 +22,25 @@ class ParseXML:
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
-        customSchema = StructType([StructField("id", IntegerType(), True),
-                                   StructField("revision",
-                                               StructType([StructField("id", IntegerType(), True)]), True),
-                                   ])
+        # customSchema = StructType([StructField("id", IntegerType(), True),
+        #                            StructField("revision",
+        #                                        StructType([StructField("id", IntegerType(), True)]), True),
+        #                            ])
 
         # customSchema = StructType([StructField("id", IntegerType(), True)])
 
         # .option("excludeAttribute", "false")
         # .option("rowTag", "elem")
         #
-        page_df = self.spark.read\
-            .format(self.format) \
-            .option("excludeAttribute", "false")\
-            .options(rowTag=self.row_tag_page)\
-            .load(self.file, schema=customSchema)
-
-        page_df.printSchema()
-        print(page_df.count(), len(page_df.columns))
-        page_df.show()
+        # page_df = self.spark.read\
+        #     .format(self.format) \
+        #     .option("excludeAttribute", "false")\
+        #     .options(rowTag=self.row_tag_page)\
+        #     .load(self.file, schema=customSchema)
+        #
+        # page_df.printSchema()
+        # print(page_df.count(), len(page_df.columns))
+        # page_df.show()
 
         # page_df.selectExpr("explode(revision.id) as rev")\
         #     .select("rev").show(100)
@@ -65,7 +65,7 @@ class ParseXML:
         # cast timestamp as timestamp type for future query
         df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
          #df_id_text_time.printSchema()
-        print(df_id_text_time.count(), len(df_id_text_time.columns))
+       #  print(df_id_text_time.count(), len(df_id_text_time.columns))
        #  df_id_text_time.show(n=100)
 
         return df_id_text_time
@@ -171,10 +171,11 @@ if __name__ == "__main__":
     # process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
+    print_df_count(process.page_df_text)
     # print_df_count(process.page_df_links)
     # print_df_count(process.page_df_id_link_time)
 
-    df_count_links = process.count_num_each_link_in_page()
+    # df_count_links = process.count_num_each_link_in_page()
     # print_df_count(df_count_links)
 
     # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
