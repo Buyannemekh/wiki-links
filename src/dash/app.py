@@ -11,7 +11,7 @@ import pandas as pd
 user = 'postgres'
 host = 'ec2-34-239-95-229.compute-1.amazonaws.com'
 dbname = 'wiki'
-con = psycopg2.connect(database=dbname, user=user, password='$password', host='localhost')
+con = psycopg2.connect(database=dbname, user=user, password='$password', host=host)
 
 
 
