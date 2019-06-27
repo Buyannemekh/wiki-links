@@ -44,13 +44,13 @@ class ParseXML:
         main_articles = page_df.filter((page_df.ns == 0) & (f.isnull('redirect')))
         print_df_count(main_articles)
 
-        main_articles_text = main_articles.select(f.col('id').alias('page_id'),
-                                      f.col('title').alias('page_title'),
-                                      f.col('revision.id').alias("revision_id"),
-                                      f.col('revision.timestamp'),
-                                      f.col('revision.text'))
-        main_articles_text = main_articles_text.withColumn("time_stamp", page_df_text.timestamp.cast(TimestampType()))
-        print_df_count(main_articles_text)
+        # main_articles_text = main_articles.select(f.col('id').alias('page_id'),
+        #                               f.col('title').alias('page_title'),
+        #                               f.col('revision.id').alias("revision_id"),
+        #                               f.col('revision.timestamp'),
+        #                               f.col('revision.text'))
+        # main_articles_text = main_articles_text.withColumn("time_stamp", page_df_text.timestamp.cast(TimestampType()))
+        # print_df_count(main_articles_text)
 
         # revision_df_id.show()
 
