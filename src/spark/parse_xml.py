@@ -5,6 +5,7 @@ from pyspark.sql.functions import desc
 from pyspark.sql.functions import explode
 from pyspark.sql.functions import udf
 from pyspark.sql.functions import col, count
+import mwparserfromhell
 
 
 class ParseXML:
@@ -16,9 +17,10 @@ class ParseXML:
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
         self.page_df_text = self.get_page_df_from_xml()  # data frame with text
-        self.page_df_links = self.create_df_of_links()   # data frame with links
-        self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
-        # self.df_earliest_timestamp = self.group_by_id_link()  # find the earliest timestamp for a link in an article
+        self.text_wiki = self.get_links()
+        # self.page_df_links = self.create_df_of_links()   # data frame with links
+        # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
+        # # self.df_earliest_timestamp = self.group_by_id_link()  # find the earliest timestamp for a link in an article
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
@@ -64,7 +66,7 @@ class ParseXML:
 
         # cast timestamp as timestamp type for future query
         df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
-         #df_id_text_time.printSchema()
+         # df_id_text_time.printSchema()
        #  print(df_id_text_time.count(), len(df_id_text_time.columns))
        #  df_id_text_time.show(n=100)
 
@@ -85,6 +87,13 @@ class ParseXML:
                              f.col('links'))
 
         return df_links
+
+    def get_links(self):
+        find_links_udf = udf(find_links_parsefromhell, ArrayType(StringType()))
+        # find links from the text column using regex with udf from df with text column
+        df = self.page_df_text.withColumn('links',
+                                          find_links_udf(self.page_df_text.text))
+        return df
 
     # create column with a single link
     def explode_links(self):
@@ -132,6 +141,13 @@ def find_links(text):
         return []
 
 
+def find_links_parsefromhell(text):
+    wikicode = mwparserfromhell.parse(text)
+    wikilinks = [x.title for x in wikicode.filter_wikilinks()]
+    print(wikilinks)
+    return wikilinks
+
+
 # helper for printing dataframe number of rows and columns
 def print_df_count(df):
     df.printSchema()
@@ -167,11 +183,11 @@ if __name__ == "__main__":
 
     current_part_1 = "s3a://wiki-current-part1/*"
 
-    process = ParseXML(medium_file)
+    process = ParseXML(small_file)
     # process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
-    print_df_count(process.page_df_text)
+    # print_df_count(process.page_df_text)
     # print_df_count(process.page_df_links)
     # print_df_count(process.page_df_id_link_time)
 
