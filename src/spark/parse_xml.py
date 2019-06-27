@@ -37,7 +37,7 @@ class ParseXML:
                                       f.col('revision.id').alias("revision_id"),
                                       f.col('revision.timestamp'),
                                       f.col('revision.text'))
-        page_df_text = page_df_text.withColumn("time", page_df_text.timestamp.cast(TimestampType()))
+        page_df_text = page_df_text.withColumn("time_stamp", page_df_text.timestamp.cast(TimestampType()))
 
         # revision_df_id.show()
 
@@ -76,7 +76,7 @@ class ParseXML:
         df_links = df.select(f.col('page_id'),
                              f.col('page_title'),
                              f.col('revision_id'),
-                             f.col('time'),
+                             f.col('time_stamp'),
                              f.col('links'))
 
         return df_links
@@ -90,7 +90,7 @@ class ParseXML:
         page_df_id_link_time = df_id_link_time.select(f.col('page_id'),
                                                       f.col('page_title'),
                                                       f.col('revision_id'),
-                                                      f.col('time'),
+                                                      f.col('time_stamp'),
                                                       f.col('link'))
 
         # page_df_id_link_time = page_df_id_link_time.selectExpr("id as revision_id",
@@ -99,7 +99,7 @@ class ParseXML:
         return page_df_id_link_time
 
     def count_num_each_link_in_page(self):
-        df = self.page_df_id_link_time.groupby("page_id", "page_title", "revision_id", "link", "time").\
+        df = self.page_df_id_link_time.groupby("page_id", "page_title", "revision_id", "link", "time_stamp").\
             agg(f.count(f.lit(1)).alias("link_count"))
         return df
 
