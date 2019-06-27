@@ -24,6 +24,8 @@ import dash_html_components as html
 #     links.append(dict(time=query_results_0.iloc[i]['link'], frequency=query_results_0.iloc[i]['count']))
 # print(links)
 
+print("hello here")
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -49,8 +51,12 @@ app.layout = html.Div(children=[
     )
 ])
 
+print("hello last")
+
+# Run with `sudo python app2.py` for port 80 (needs sudo permission)
 if __name__ == '__main__':
     app.run_server(debug=True, host='0.0.0.0', port=80)
+
 
 #
 # app.layout = html.Div(children=[
