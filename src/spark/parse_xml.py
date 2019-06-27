@@ -16,8 +16,8 @@ class ParseXML:
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
         self.page_df_text = self.get_page_df_from_xml()  # data frame with text
-        self.page_df_links = self.create_df_of_links()   # data frame with links
-        self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
+        # self.page_df_links = self.create_df_of_links()   # data frame with links
+        # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
@@ -32,12 +32,17 @@ class ParseXML:
             .options(rowTag=self.row_tag_page)\
             .load(self.file)
 
+        print_df_count(page_df)
+
         page_df_text = page_df.select(f.col('id').alias('page_id'),
                                       f.col('title').alias('page_title'),
                                       f.col('revision.id').alias("revision_id"),
                                       f.col('revision.timestamp'),
                                       f.col('revision.text'))
         page_df_text = page_df_text.withColumn("time_stamp", page_df_text.timestamp.cast(TimestampType()))
+
+
+        # page_df_ns_0 = page_df.filter(page_df.ns==0)
 
         # revision_df_id.show()
 
@@ -158,7 +163,7 @@ if __name__ == "__main__":
 
     current_part_1 = "s3a://wiki-current-part1/*"
 
-    process = ParseXML(current_part_1)
+    process = ParseXML(small_file)
     # process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
@@ -166,14 +171,14 @@ if __name__ == "__main__":
     # print_df_count(process.page_df_links)
     # print_df_count(process.page_df_id_link_time)
 
-    df_count_links = process.count_num_each_link_in_page()
+    # df_count_links = process.count_num_each_link_in_page()
     # print_df_count(df_count_links)
 
-    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    database = "wiki"
-    port = "5432"
-    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
-
-
-
+    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    # database = "wiki"
+    # port = "5432"
+    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    # write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
+    #
+    #
+    #
