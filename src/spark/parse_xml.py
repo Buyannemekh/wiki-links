@@ -22,25 +22,25 @@ class ParseXML:
 
     # parse xml and extract information under revision tag
     def get_page_df_from_xml(self):
-        # customSchema = StructType([StructField("id", IntegerType(), True),
-        #                            StructField("revision",
-        #                                        StructType([StructField("id", IntegerType(), True)]), True),
-        #                            ])
+        customSchema = StructType([StructField("id", IntegerType(), True),
+                                   StructField("revision",
+                                               StructType([StructField("id", IntegerType(), True)]), True),
+                                   ])
 
         # customSchema = StructType([StructField("id", IntegerType(), True)])
 
         # .option("excludeAttribute", "false")
         # .option("rowTag", "elem")
         #
-        # page_df = self.spark.read\
-        #     .format(self.format) \
-        #     .option("excludeAttribute", "false")\
-        #     .options(rowTag=self.row_tag_page)\
-        #     .load(self.file)
-        #
-        # page_df.printSchema()
-        # print(page_df.count(), len(page_df.columns))
-        # page_df.show()
+        page_df = self.spark.read\
+            .format(self.format) \
+            .option("excludeAttribute", "false")\
+            .options(rowTag=self.row_tag_page)\
+            .load(self.file, schema=customSchema)
+
+        page_df.printSchema()
+        print(page_df.count(), len(page_df.columns))
+        page_df.show()
 
         # page_df.selectExpr("explode(revision.id) as rev")\
         #     .select("rev").show(100)
@@ -167,7 +167,7 @@ if __name__ == "__main__":
 
     current_part_1 = "s3a://wiki-current-part1/*"
 
-    process = ParseXML(current_file)
+    process = ParseXML(medium_file)
     # process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
