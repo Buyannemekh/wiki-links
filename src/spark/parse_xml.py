@@ -5,7 +5,6 @@ from pyspark.sql.functions import desc
 from pyspark.sql.functions import explode
 from pyspark.sql.functions import udf
 from pyspark.sql.functions import col, count
-import mwparserfromhell
 
 
 class ParseXML:
@@ -17,7 +16,6 @@ class ParseXML:
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
         self.page_df_text = self.get_page_df_from_xml()  # data frame with text
-        self.text_wiki = self.get_links()
         # self.page_df_links = self.create_df_of_links()   # data frame with links
         # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
         # # self.df_earliest_timestamp = self.group_by_id_link()  # find the earliest timestamp for a link in an article
@@ -34,11 +32,11 @@ class ParseXML:
         # .option("excludeAttribute", "false")
         # .option("rowTag", "elem")
         #
-        # page_df = self.spark.read\
-        #     .format(self.format) \
-        #     .option("excludeAttribute", "false")\
-        #     .options(rowTag=self.row_tag_page)\
-        #     .load(self.file, schema=customSchema)
+        page_df = self.spark.read\
+            .format(self.format) \
+            .option("excludeAttribute", "false")\
+            .options(rowTag=self.row_tag_page)\
+            .load(self.file)
         #
         # page_df.printSchema()
         # print(page_df.count(), len(page_df.columns))
@@ -47,8 +45,12 @@ class ParseXML:
         # page_df.selectExpr("explode(revision.id) as rev")\
         #     .select("rev").show(100)
 
-        # revision_df_id = page_df.select(f.col('id'), f.col('revision.id'))
-        # revision_df_id.show()
+        revision_df_id = page_df.select(f.col('id'),
+                                        f.col('title'),
+                                        f.col('revision.id'),
+                                        f.col('revision.timestamp'),
+                                        f.col('revision.text'))
+        revision_df_id.show()
 
         revision_df = self.spark.read\
             .format(self.format) \
@@ -68,7 +70,7 @@ class ParseXML:
         df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
          # df_id_text_time.printSchema()
        #  print(df_id_text_time.count(), len(df_id_text_time.columns))
-       #  df_id_text_time.show(n=100)
+        df_id_text_time.show()
 
         return df_id_text_time
 
@@ -87,13 +89,6 @@ class ParseXML:
                              f.col('links'))
 
         return df_links
-
-    def get_links(self):
-        find_links_udf = udf(find_links_parsefromhell, ArrayType(StringType()))
-        # find links from the text column using regex with udf from df with text column
-        df = self.page_df_text.withColumn('links',
-                                          find_links_udf(self.page_df_text.text))
-        return df
 
     # create column with a single link
     def explode_links(self):
@@ -139,13 +134,6 @@ def find_links(text):
         return links_url_name
     except:
         return []
-
-
-def find_links_parsefromhell(text):
-    wikicode = mwparserfromhell.parse(text)
-    wikilinks = [x.title for x in wikicode.filter_wikilinks()]
-    print(wikilinks)
-    return wikilinks
 
 
 # helper for printing dataframe number of rows and columns
