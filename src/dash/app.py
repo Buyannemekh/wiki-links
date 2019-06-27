@@ -67,9 +67,7 @@ app.layout = html.Div(children=[
     dcc.Graph(
         id='example-graph',
         figure={
-            'data': [
-                {'x': query_results_0['link'], 'y': query_results_0['count'], 'type': 'bar', 'name': 'Links'}
-            ],
+            'data': [{'x': query_results_0['link'], 'y': query_results_0['count'], 'type': 'bar', 'name': 'Links'}],
             'layout': {
                 'title': 'The most cited Wikipedia pages in the past month'
             }
