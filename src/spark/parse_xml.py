@@ -138,9 +138,9 @@ def write_to_postgres(df_link_count, jdbc_url):
         "driver": "org.postgresql.Driver"
     }
 
-    df_link_count.select('revision_id', 'link_name', 'time_stamp', 'link_count').\
+    df_link_count.select('page_id', 'page_title', 'revision_id', 'link', 'time_stamp', 'link_count').\
         write.jdbc(url=jdbc_url,
-                   table='multiple_file_links',
+                   table='pages_links',
                    properties=connection_properties,
                    mode='append')
 
@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
     current_part_1 = "s3a://wiki-current-part1/*"
 
-    process = ParseXML(current_file_2)
+    process = ParseXML(small_file)
     # process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
@@ -169,11 +169,11 @@ if __name__ == "__main__":
     df_count_links = process.count_num_each_link_in_page()
     print_df_count(df_count_links)
 
-    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    # database = "wikicurrent"
-    # port = "5432"
-    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    # write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
-    #
-    #
+    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    database = "wikicurrent"
+    port = "5432"
+    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
+
+
 
