@@ -7,11 +7,11 @@ import pandas as pd
 
 
 # Settings for psycopg Timescale connector
-user = 'postgres'
-host = 'ec2-34-239-95-229.compute-1.amazonaws.com'
-dbname = 'wiki'
-con = psycopg2.connect(database=dbname, user=user, password='$password', host=host)
-
+# user = 'postgres'
+# host = 'ec2-34-239-95-229.compute-1.amazonaws.com'
+# dbname = 'wiki'
+# con = psycopg2.connect(database=dbname, user=user, password='$password', host=host)
+#
 
 # Query database to load landing page graph
 # sql_query_0 = "SELECT link, COUNT(*) FROM pages_links " + \
