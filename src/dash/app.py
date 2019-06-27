@@ -20,7 +20,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 
 # Query database to load landing page graph
-sql_query_0 = "SELECT link, COUNT(*) FROM pages_links" + \
+sql_query_0 = "SELECT link, COUNT(*) FROM pages_links " + \
               "WHERE time_stamp BETWEEN '2019-06-01' AND CURRENT_TIMESTAMP " + \
               "GROUP BY link ORDER BY COUNT(*) DESC LIMIT 20"
 
