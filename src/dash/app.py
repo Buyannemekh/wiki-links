@@ -55,8 +55,8 @@ print("hello last")
 
 # Run with `sudo python app2.py` for port 80 (needs sudo permission)
 if __name__ == '__main__':
-    app.run_server(debug=True, host='0.0.0.0', port=80)
-
+    # app.run_server(debug=True, host='0.0.0.0', port=80)
+    app.run_server(debug=True)
 
 #
 # app.layout = html.Div(children=[
