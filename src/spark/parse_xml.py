@@ -16,8 +16,8 @@ class ParseXML:
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
         self.page_df_text = self.get_page_df_from_xml()  # data frame with text
-        # self.page_df_links = self.create_df_of_links()   # data frame with links
-        # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
+        self.page_df_links = self.create_df_of_links()   # data frame with links
+        self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
         # # self.df_earliest_timestamp = self.group_by_id_link()  # find the earliest timestamp for a link in an article
 
     # parse xml and extract information under revision tag
@@ -50,29 +50,30 @@ class ParseXML:
                                         f.col('revision.id').alias("revision_id"),
                                         f.col('revision.timestamp'),
                                         f.col('revision.text'))
+        revision_df_id = revision_df_id.withColumn("time", revision_df_id.timestamp.cast(TimestampType()))
         revision_df_id.show()
 
-        revision_df = self.spark.read\
-            .format(self.format) \
-            .option("excludeAttribute", "false") \
-            .options(rowTag=self.row_tag_revision)\
-            .load(self.file)
+        # revision_df = self.spark.read\
+        #     .format(self.format) \
+        #     .option("excludeAttribute", "false") \
+        #     .options(rowTag=self.row_tag_revision)\
+        #     .load(self.file)
+        #
+        # # create df with article id, text, and revision timestamp
+        # df_id_text_time = revision_df.select(f.col('contributor'),
+        #                                      f.col('id'),
+        #                                      f.col('model'),
+        #                                      f.col('parentid'),
+        #                                      f.col('text'),
+        #                                      f.col('timestamp'))
+        #
+        # # cast timestamp as timestamp type for future query
+        # df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
+        # # df_id_text_time.printSchema()
+        # # print(df_id_text_time.count(), len(df_id_text_time.columns))
+        # df_id_text_time.show()
 
-        # create df with article id, text, and revision timestamp
-        df_id_text_time = revision_df.select(f.col('contributor'),
-                                             f.col('id'),
-                                             f.col('model'),
-                                             f.col('parentid'),
-                                             f.col('text'),
-                                             f.col('timestamp'))
-
-        # cast timestamp as timestamp type for future query
-        df_id_text_time = df_id_text_time.withColumn("time", df_id_text_time.timestamp.cast(TimestampType()))
-         # df_id_text_time.printSchema()
-       #  print(df_id_text_time.count(), len(df_id_text_time.columns))
-        df_id_text_time.show()
-
-        return df_id_text_time
+        return revision_df_id
 
     # extract links from the text and create data frame with list of link titles
     def create_df_of_links(self):
@@ -84,7 +85,9 @@ class ParseXML:
                                           find_links_udf(self.page_df_text.text))
 
         # dataframe with article id, revision timestamp, array of links in the text
-        df_links = df.select(f.col('id'),
+        df_links = df.select(f.col('page_id'),
+                             f.col('page_title'),
+                             f.col('revision_id'),
                              f.col('time'),
                              f.col('links'))
 
@@ -96,13 +99,15 @@ class ParseXML:
         df_id_link_time = self.page_df_links.withColumn("link", explode(self.page_df_links.links))
 
         # create dataframe with article id, revision timestamp, link name (dropping links)
-        page_df_id_link_time = df_id_link_time.select(f.col('id'),
+        page_df_id_link_time = df_id_link_time.select(f.col('page_id'),
+                                                      f.col('page_title'),
+                                                      f.col('revision_id'),
                                                       f.col('time'),
                                                       f.col('link'))
 
-        page_df_id_link_time = page_df_id_link_time.selectExpr("id as revision_id",
-                                                               "link as link_name",
-                                                               "time as time_stamp")
+        # page_df_id_link_time = page_df_id_link_time.selectExpr("id as revision_id",
+        #                                                        "link as link_name",
+        #                                                        "time as time_stamp")
         return page_df_id_link_time
 
     # when multiple revisions, find the earliest creation date for a link in an article
@@ -175,9 +180,9 @@ if __name__ == "__main__":
     # process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
-    # print_df_count(process.page_df_text)
-    # print_df_count(process.page_df_links)
-    # print_df_count(process.page_df_id_link_time)
+    print_df_count(process.page_df_text)
+    print_df_count(process.page_df_links)
+    print_df_count(process.page_df_id_link_time)
 
     # df_count_links = process.count_num_each_link_in_page()
     # print_df_count(df_count_links)
