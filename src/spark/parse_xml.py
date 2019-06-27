@@ -34,23 +34,24 @@ class ParseXML:
 
         print_df_count(page_df)
 
-        page_df_text = page_df.select(f.col('id').alias('page_id'),
-                                      f.col('title').alias('page_title'),
-                                      f.col('revision.id').alias("revision_id"),
-                                      f.col('revision.timestamp'),
-                                      f.col('revision.text'))
-        page_df_text = page_df_text.withColumn("time_stamp", page_df_text.timestamp.cast(TimestampType()))
-
-        main_articles = page_df.filter((page_df.ns == 0) & (f.isnull('redirect')))
-        print_df_count(main_articles)
-
-        # main_articles_text = main_articles.select(f.col('id').alias('page_id'),
+        # page_df_text = page_df.select(f.col('id').alias('page_id'),
         #                               f.col('title').alias('page_title'),
         #                               f.col('revision.id').alias("revision_id"),
         #                               f.col('revision.timestamp'),
         #                               f.col('revision.text'))
-        # main_articles_text = main_articles_text.withColumn("time_stamp", page_df_text.timestamp.cast(TimestampType()))
-        # print_df_count(main_articles_text)
+        # page_df_text = page_df_text.withColumn("time_stamp", page_df_text.timestamp.cast(TimestampType()))
+
+        # Filter only main articles by its namespace and pages that are not redirecting
+        main_articles = page_df.filter((page_df.ns == 0) & (f.isnull('redirect')))
+        print_df_count(main_articles)
+
+        main_articles_text = main_articles.select(f.col('id').alias('page_id'),
+                                                  f.col('title').alias('page_title'),
+                                                  f.col('revision.id').alias("revision_id"),
+                                                  f.col('revision.timestamp'),
+                                                  f.col('revision.text'))
+        main_articles_text = main_articles_text.withColumn("time_stamp", main_articles_text.timestamp.cast(TimestampType()))
+        print_df_count(main_articles_text)
 
         # revision_df_id.show()
 
@@ -74,7 +75,7 @@ class ParseXML:
         # # print(df_id_text_time.count(), len(df_id_text_time.columns))
         # df_id_text_time.show()
 
-        return page_df_text
+        return main_articles_text
 
     # extract links from the text and create data frame with list of link titles
     def create_df_of_links(self):
