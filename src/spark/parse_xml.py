@@ -45,9 +45,9 @@ class ParseXML:
         # page_df.selectExpr("explode(revision.id) as rev")\
         #     .select("rev").show(100)
 
-        revision_df_id = page_df.select(f.col('id'),
-                                        f.col('title'),
-                                        f.col('revision.id'),
+        revision_df_id = page_df.select(f.col('id').alias('page_id'),
+                                        f.col('title').alias('page_title'),
+                                        f.col('revision.id').alias("revision_id"),
                                         f.col('revision.timestamp'),
                                         f.col('revision.text'))
         revision_df_id.show()
