@@ -47,7 +47,8 @@ class ParseXML:
                                                 f.col('revision.timestamp'),
                                                 f.col('revision.text'))
 
-        df_articles_text = df_articles_text.withColumn("time_stamp", df_articles_text.timestamp.cast(TimestampType()))
+        df_articles_text = df_articles_text.withColumn("time_stamp",
+                                                       df_articles_text.timestamp.cast(TimestampType()))
         print_df_count(df_articles_text) if print_table_info else None
 
         return df_articles_text
@@ -67,7 +68,6 @@ class ParseXML:
 
         # find links from the text column using regex with udf from df with text column
         df = self.page_df_text.withColumn('links', find_links_udf(self.page_df_text.text))
-
         df_page_count_links = df.select(f.col('page_id'),
                                         f.col('page_title'),
                                         f.col('time_stamp'),
@@ -76,24 +76,6 @@ class ParseXML:
         print_df_count(df_page_count_links) if print_table_info else None
 
         return df_page_count_links
-
-    # # PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINKS: list with 1 element
-    # def create_df_of_links(self):
-    #
-    #     find_links_udf = udf(find_links, ArrayType(StringType()))
-    #
-    #     # find links from the text column using regex with udf from df with text column
-    #     df = self.page_df_text.withColumn('links',
-    #                                       find_links_udf(self.page_df_text.text))
-    #
-    #     # dataframe with article id, revision timestamp, array of links in the text
-    #     df_links = df.select(f.col('page_id'),
-    #                          f.col('page_title'),
-    #                          f.col('revision_id'),
-    #                          f.col('time_stamp'),
-    #                          f.col('links'))
-    #
-    #     return df_links
 
     # (each link is a row):  PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINK: str
     def explode_links(self, print_table_info: bool):
@@ -104,7 +86,6 @@ class ParseXML:
         page_df_id_link_time = df_id_link_time.select(f.col('page_id'),
                                                       f.col('page_title'),
                                                       f.col('link'))
-
         print_df_count(page_df_id_link_time) if print_table_info else None
 
         return page_df_id_link_time
@@ -129,7 +110,7 @@ def find_links(text):
         sep = "|"
         links_url_name = [link.split(sep, 1)[0] if sep in link else link for link in valid_links]
 
-        distinct_links = list(set(links_url_name))
+        distinct_links = list(set(links_url_name))   # if link appeared multiple times in the same article, count as 1
         return distinct_links
     except:
         return []
@@ -167,19 +148,9 @@ if __name__ == "__main__":
     current_file = "s3a://wiki-meta/meta-current1.xml.bz2"  #200mb
     current_large_file = "s3a://wiki-meta/meta-current27.xml.bz2"  #628mb
     current_file_2 = "s3a://wiki-current-part2/current2.xml-p30304p88444.bz2"  # 200mb
-
     current_part_1 = "s3a://wiki-current-part1/*"
 
     process = ParseXML(small_file)
-    # process.get_page_df_from_xml()
-    # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
-
-    # print_df_count(process.page_df_text)
-    # print_df_count(process.page_df_links)
-    # print_df_count(process.page_df_id_link_time)
-
-    df_count_links = process.count_num_each_link_in_page()
-    print_df_count(df_count_links)
 
     # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
     # database = "wikimain"
