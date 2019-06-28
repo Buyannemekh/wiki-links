@@ -8,39 +8,40 @@ from pyspark.sql.functions import col, count
 
 
 class ParseXML:
-    def __init__(self, file, print_table_info: bool):
+    def __init__(self, file):
         self.file = file
-        self.print_table_info = print_table_info
         self.spark = SparkSession.builder.getOrCreate()
         self.format = "xml"
         self.row_tag_revision = "revision"
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
-        self.df_main_pages = self.get_page_df_from_xml()  # reading xml and extracting main pages
-        self.page_df_text = self.get_page_text_column()  # data frame with text
-        self.page_id_title = self.get_df_with_page_id_title()  # df only article title and ID
-        self.page_id_links = self.get_df_article_id_links()  # page id and links in list
+        self.df_main_pages = self.get_page_df_from_xml(print_table_info=True)  # reading xml and extracting main pages
+        self.page_df_text = self.get_page_text_column(print_table_info=True)  # data frame with text
+        self.page_id_title = self.get_df_with_page_id_title(print_table_info=True)  # df only article title and ID
+        self.page_id_links = self.get_df_article_id_links(print_table_info=True)  # page id and links in list
         #
         # self.page_df_links = self.create_df_of_links()   # data frame with links
         # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
 
     # parse xml and extract information under page tag, filter only main articles
-    def get_page_df_from_xml(self):
+    def get_page_df_from_xml(self, print_table_info: bool):
         page_df = self.spark.read\
             .format(self.format) \
             .option("excludeAttribute", "false")\
             .options(rowTag=self.row_tag_page)\
             .load(self.file)
-        print_df_count(page_df) if self.print_table_info else None
+        print_df_count(page_df) if print_table_info else None
 
         # Filter only main articles by its namespace and pages that are not redirecting
         main_articles = page_df.filter((page_df.ns == 0) & (f.isnull('redirect')))
-        print_df_count(main_articles) if self.print_table_info else None
+
+        if print_table_info:
+            print_df_count(main_articles)
 
         return main_articles
 
     # PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, TEXT: list with 1 element
-    def get_page_text_column(self):
+    def get_page_text_column(self, print_table_info: bool):
         df_articles_text = self.df_main_pages.select(f.col('id').alias('page_id'),
                                                      f.col('title').alias('page_title'),
                                                      f.col('revision.id').alias("revision_id"),
@@ -48,21 +49,24 @@ class ParseXML:
                                                      f.col('revision.text'))
 
         df_articles_text = df_articles_text.withColumn("time_stamp", df_articles_text.timestamp.cast(TimestampType()))
-        if self.print_table_info:
+
+        if print_table_info:
             print_df_count(df_articles_text)
 
         return df_articles_text
 
     # PAGE ID: int, PAGE TITLE: str
-    def get_df_with_page_id_title(self):
+    def get_df_with_page_id_title(self, print_table_info: bool):
         df_article_id_title = self.df_main_pages.select(f.col('id').alias('page_id'),
                                                         f.col('title').alias('page_title')).distinct()
 
-        print_df_count(df_article_id_title) if self.print_table_info else None
+        if print_table_info:
+            print_df_count(df_article_id_title)
+
         return df_article_id_title
 
     # PAGE ID: int, LINKS: list
-    def get_df_article_id_links(self):
+    def get_df_article_id_links(self, print_table_info: bool):
         find_links_udf = udf(find_links, ArrayType(StringType()))
 
         # find links from the text column using regex with udf from df with text column
@@ -71,11 +75,15 @@ class ParseXML:
 
         df_links = df.select(f.col('page_title'),
                              f.col('links'))
-        
-        print_df_count(df_links) if self.print_table_info else None
+
+        if print_table_info:
+            print_df_count(df_links)
+
         countdf = df_links.select('*', f.size('links').alias('link_cnt'))
 
-        print_df_count(countdf) if self.print_table_info else None
+        if print_table_info:
+            print_df_count(countdf)
+
         return df_links
 
     # PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINKS: list with 1 element
@@ -170,7 +178,7 @@ if __name__ == "__main__":
 
     current_part_1 = "s3a://wiki-current-part1/*"
 
-    process = ParseXML(small_file, print_table_info=True)
+    process = ParseXML(small_file)
     # process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
