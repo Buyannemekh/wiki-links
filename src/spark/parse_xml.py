@@ -8,18 +8,20 @@ from pyspark.sql.functions import col, count
 
 
 class ParseXML:
-    def __init__(self, file):
+    def __init__(self, file, print_table_info: bool):
         self.file = file
+        self.print_table_info = print_table_info
         self.spark = SparkSession.builder.getOrCreate()
         self.format = "xml"
         self.row_tag_revision = "revision"
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
-        self.page_df_text = self.get_page_df_from_xml()  # data frame with text
+        self.df_main_pages = self.get_page_df_from_xml()
+        self.page_df_text = self.get_article_text_column()  # data frame with text
         self.page_df_links = self.create_df_of_links()   # data frame with links
         self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
 
-    # parse xml and extract information under revision tag
+    # parse xml and extract information under page tag, filter only main articles
     def get_page_df_from_xml(self):
 
         page_df = self.spark.read\
@@ -28,22 +30,34 @@ class ParseXML:
             .options(rowTag=self.row_tag_page)\
             .load(self.file)
 
-        print_df_count(page_df)
+        print_df_count(page_df) if self.print_table_info else None
 
         # Filter only main articles by its namespace and pages that are not redirecting
         main_articles = page_df.filter((page_df.ns == 0) & (f.isnull('redirect')))
-        print_df_count(main_articles)
 
-        main_articles_text = main_articles.select(f.col('id').alias('page_id'),
-                                                  f.col('title').alias('page_title'),
-                                                  f.col('revision.id').alias("revision_id"),
-                                                  f.col('revision.timestamp'),
-                                                  f.col('revision.text'))
+        print_df_count(main_articles) if self.print_table_info else None
 
-        main_articles_text = main_articles_text.withColumn("time_stamp", main_articles_text.timestamp.cast(TimestampType()))
-        print_df_count(main_articles_text)
+        return main_articles
 
-        return main_articles_text
+    # go to revision tag and get text information of the page
+    def get_article_text_column(self):
+
+        df_articles_text = self.df_main_pages.select(f.col('id').alias('page_id'),
+                                                     f.col('title').alias('page_title'),
+                                                     f.col('revision.id').alias("revision_id"),
+                                                     f.col('revision.timestamp'),
+                                                     f.col('revision.text'))
+
+        df_articles_text = df_articles_text.withColumn("time_stamp", df_articles_text.timestamp.cast(TimestampType()))
+
+        if self.print_table_info:
+            print_df_count(df_articles_text)
+
+        return df_articles_text
+
+    def get_df_with_article_id_title(self):
+
+        pass
 
     # extract links from the text and create data frame with list of link titles
     def create_df_of_links(self):
@@ -137,7 +151,7 @@ if __name__ == "__main__":
 
     current_part_1 = "s3a://wiki-current-part1/*"
 
-    process = ParseXML(current_part_1)
+    process = ParseXML(small_file, print_table_info=True)
     # process.get_page_df_from_xml()
     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
 
@@ -148,11 +162,11 @@ if __name__ == "__main__":
     df_count_links = process.count_num_each_link_in_page()
     print_df_count(df_count_links)
 
-    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    database = "wikimain"
-    port = "5432"
-    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
+    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    # database = "wikimain"
+    # port = "5432"
+    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    # write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
 
 
 
