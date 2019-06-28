@@ -34,9 +34,7 @@ class ParseXML:
 
         # Filter only main articles by its namespace and pages that are not redirecting
         main_articles = page_df.filter((page_df.ns == 0) & (f.isnull('redirect')))
-
-        if print_table_info:
-            print_df_count(main_articles)
+        print_df_count(main_articles) if print_table_info else None
 
         return main_articles
 
@@ -68,13 +66,13 @@ class ParseXML:
         # find links from the text column using regex with udf from df with text column
         df = self.page_df_text.withColumn('links', find_links_udf(self.page_df_text.text))
 
-        df_links = df.select(f.col('page_title'), f.col('links'))
-        print_df_count(df_links) if print_table_info else None
+        # df_links = df.select(f.col('page_title'), f.col('links'))
+        # print_df_count(df_links) if print_table_info else None
 
-        countdf = df_links.select('*', f.size('links').alias('link_cnt'))
-        print_df_count(countdf) if print_table_info else None
+        df_page_count_links = df.select(f.col('page_title'), f.col('links'), f.size('links').alias('link_cnt'))
+        print_df_count(df_page_count_links) if print_table_info else None
 
-        return df_links
+        return df_page_count_links
 
     # PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINKS: list with 1 element
     def create_df_of_links(self):
