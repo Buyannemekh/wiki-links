@@ -68,28 +68,31 @@ class ParseXML:
         # find links from the text column using regex with udf from df with text column
         df = self.page_df_text.withColumn('links', find_links_udf(self.page_df_text.text))
 
-        df_page_count_links = df.select(f.col('page_title'), f.col('links'), f.size('links').alias('link_cnt'))
+        df_page_count_links = df.select(f.col('page_title'),
+                                        f.col('time_stamp'),
+                                        f.col('links'),
+                                        f.size('links').alias('link_cnt'))
         print_df_count(df_page_count_links) if print_table_info else None
 
         return df_page_count_links
 
-    # PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINKS: list with 1 element
-    def create_df_of_links(self):
-
-        find_links_udf = udf(find_links, ArrayType(StringType()))
-
-        # find links from the text column using regex with udf from df with text column
-        df = self.page_df_text.withColumn('links',
-                                          find_links_udf(self.page_df_text.text))
-
-        # dataframe with article id, revision timestamp, array of links in the text
-        df_links = df.select(f.col('page_id'),
-                             f.col('page_title'),
-                             f.col('revision_id'),
-                             f.col('time_stamp'),
-                             f.col('links'))
-
-        return df_links
+    # # PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINKS: list with 1 element
+    # def create_df_of_links(self):
+    #
+    #     find_links_udf = udf(find_links, ArrayType(StringType()))
+    #
+    #     # find links from the text column using regex with udf from df with text column
+    #     df = self.page_df_text.withColumn('links',
+    #                                       find_links_udf(self.page_df_text.text))
+    #
+    #     # dataframe with article id, revision timestamp, array of links in the text
+    #     df_links = df.select(f.col('page_id'),
+    #                          f.col('page_title'),
+    #                          f.col('revision_id'),
+    #                          f.col('time_stamp'),
+    #                          f.col('links'))
+    #
+    #     return df_links
 
     # (each link is a row):  PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINK: str
     def explode_links(self):
