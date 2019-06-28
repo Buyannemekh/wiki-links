@@ -68,7 +68,8 @@ class ParseXML:
         # find links from the text column using regex with udf from df with text column
         df = self.page_df_text.withColumn('links', find_links_udf(self.page_df_text.text))
 
-        df_page_count_links = df.select(f.col('page_title'),
+        df_page_count_links = df.select(f.col('page_id'),
+                                        f.col('page_title'),
                                         f.col('time_stamp'),
                                         f.col('links'),
                                         f.size('links').alias('link_cnt'))
@@ -95,14 +96,17 @@ class ParseXML:
     #     return df_links
 
     # (each link is a row):  PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINK: str
-    def explode_links(self):
+    def explode_links(self, print_table_info: bool):
         # create column of single link name
         df_id_link_time = self.page_id_links.withColumn("link", explode(self.page_id_links.links))
 
         # create dataframe with article id, revision timestamp, link name (dropping links)
-        page_df_id_link_time = df_id_link_time.select(f.col('page_title'),
+        page_df_id_link_time = df_id_link_time.select(f.col('page_id'),
+                                                      f.col('page_title'),
                                                       f.col('link'))
 
+        print_df_count(page_df_id_link_time) if print_table_info else None
+        
         return page_df_id_link_time
 
     def count_num_each_link_in_page(self):
