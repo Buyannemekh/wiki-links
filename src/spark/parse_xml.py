@@ -15,7 +15,6 @@ class ParseXML:
         self.row_tag_revision = "revision"
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
-       # self.df_main_pages = self.get_page_df_from_xml(print_table_info=True)  # reading xml and extracting main pages
         self.df_main_pages_text = self.get_page_text_column(print_table_info=True)
         self.page_df_text = self.get_page_text_column(print_table_info=True)  # data frame with text
         self.page_id_title = self.get_df_with_page_id_title(print_table_info=True)  # df only article title and ID
@@ -55,9 +54,9 @@ class ParseXML:
 
     # PAGE ID: int, PAGE TITLE: str
     def get_df_with_page_id_title(self, print_table_info: bool):
-        df_article_id_title = self.df_main_pages_text.select(f.col('id').alias('page_id'),
-                                                        f.col('title').alias('page_title'),
-                                                        f.col("time_stamp")).distinct()
+        df_article_id_title = self.df_main_pages_text.select(f.col('page_id'),
+                                                             f.col('page_title'),
+                                                             f.col("time_stamp")).distinct()
         print_df_count(df_article_id_title) if print_table_info else None
 
         return df_article_id_title
