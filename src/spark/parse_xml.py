@@ -146,8 +146,10 @@ if __name__ == "__main__":
     current_large_file = "s3a://wiki-meta/meta-current27.xml.bz2"  #628mb
     current_file_2 = "s3a://wiki-current-part2/current2.xml-p30304p88444.bz2"  # 200mb
     current_part_1 = "s3a://wiki-current-part1/*"
+    current_part_2 = "s3a://wiki-current-part2/*"
+    current_part_3 = "s3a://wiki-current-part3/*"
 
-    process = ParseXML(current_part_1)
+    process = ParseXML(current_part_2)
 
     properties = {
         "user": "postgres",
