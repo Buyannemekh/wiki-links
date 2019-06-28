@@ -149,7 +149,7 @@ if __name__ == "__main__":
     current_part_2 = "s3a://wiki-current-part2/*"
     current_part_3 = "s3a://wiki-current-part3/*"
 
-    process = ParseXML(current_part_2)
+    process = ParseXML(current_part_3)
 
     properties = {
         "user": "postgres",
