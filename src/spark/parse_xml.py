@@ -69,10 +69,11 @@ class ParseXML:
         df = self.page_df_text.withColumn('links',
                                           find_links_udf(self.page_df_text.text))
 
-        df_links = df.select(f.col('page_id'),
+        df_links = df.select(f.col('page_title'),
                              f.col('links'))
+        
         print_df_count(df_links) if self.print_table_info else None
-        countdf = df.select('*', f.size('links').alias('link_cnt'))
+        countdf = df_links.select('*', f.size('links').alias('link_cnt'))
 
         print_df_count(countdf) if self.print_table_info else None
         return df_links
