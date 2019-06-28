@@ -21,7 +21,7 @@ class ParseXML:
         self.page_id_links = self.get_df_article_id_links(print_table_info=True)  # page id and links in list
         #
         # self.page_df_links = self.create_df_of_links()   # data frame with links
-        # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
+        self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
 
     # parse xml and extract information under page tag, filter only main articles
     def get_page_df_from_xml(self, print_table_info: bool):
@@ -97,19 +97,17 @@ class ParseXML:
     # (each link is a row):  PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINK: str
     def explode_links(self):
         # create column of single link name
-        df_id_link_time = self.page_df_links.withColumn("link", explode(self.page_df_links.links))
+        df_id_link_time = self.page_id_links.withColumn("link", explode(self.page_id_links.links))
 
         # create dataframe with article id, revision timestamp, link name (dropping links)
         page_df_id_link_time = df_id_link_time.select(f.col('page_id'),
                                                       f.col('page_title'),
-                                                      f.col('revision_id'),
-                                                      f.col('time_stamp'),
                                                       f.col('link'))
 
         return page_df_id_link_time
 
     def count_num_each_link_in_page(self):
-        df = self.page_df_id_link_time.groupby("page_id", "page_title", "revision_id", "link", "time_stamp").\
+        df = self.page_df_id_link_time.groupby("page_id", "page_title", "link").\
             agg(f.count(f.lit(1)).alias("link_count"))
         return df
 
@@ -128,7 +126,8 @@ def find_links(text):
         sep = "|"
         links_url_name = [link.split(sep, 1)[0] if sep in link else link for link in valid_links]
 
-        return links_url_name
+        distinct_links = list(set(links_url_name))
+        return distinct_links
     except:
         return []
 
@@ -176,8 +175,8 @@ if __name__ == "__main__":
     # print_df_count(process.page_df_links)
     # print_df_count(process.page_df_id_link_time)
 
-    # df_count_links = process.count_num_each_link_in_page()
-    # print_df_count(df_count_links)
+    df_count_links = process.count_num_each_link_in_page()
+    print_df_count(df_count_links)
 
     # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
     # database = "wikimain"
