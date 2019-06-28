@@ -49,9 +49,7 @@ class ParseXML:
                                                      f.col('revision.text'))
 
         df_articles_text = df_articles_text.withColumn("time_stamp", df_articles_text.timestamp.cast(TimestampType()))
-
-        if print_table_info:
-            print_df_count(df_articles_text)
+        print_df_count(df_articles_text) if print_table_info else None
 
         return df_articles_text
 
@@ -59,9 +57,7 @@ class ParseXML:
     def get_df_with_page_id_title(self, print_table_info: bool):
         df_article_id_title = self.df_main_pages.select(f.col('id').alias('page_id'),
                                                         f.col('title').alias('page_title')).distinct()
-
-        if print_table_info:
-            print_df_count(df_article_id_title)
+        print_df_count(df_article_id_title) if print_table_info else None
 
         return df_article_id_title
 
@@ -70,19 +66,13 @@ class ParseXML:
         find_links_udf = udf(find_links, ArrayType(StringType()))
 
         # find links from the text column using regex with udf from df with text column
-        df = self.page_df_text.withColumn('links',
-                                          find_links_udf(self.page_df_text.text))
+        df = self.page_df_text.withColumn('links', find_links_udf(self.page_df_text.text))
 
-        df_links = df.select(f.col('page_title'),
-                             f.col('links'))
-
-        if print_table_info:
-            print_df_count(df_links)
+        df_links = df.select(f.col('page_title'), f.col('links'))
+        print_df_count(df_links) if print_table_info else None
 
         countdf = df_links.select('*', f.size('links').alias('link_cnt'))
-
-        if print_table_info:
-            print_df_count(countdf)
+        print_df_count(countdf) if print_table_info else None
 
         return df_links
 
