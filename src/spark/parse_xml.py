@@ -138,7 +138,7 @@ def write_links_to_postgres(df_links, jdbc_url, connection_properties):
                    properties=connection_properties,
                    mode='append')
 
-    print("PAGES DONE")
+    print("LINKS DONE")
 
 
 if __name__ == "__main__":
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     current_file_2 = "s3a://wiki-current-part2/current2.xml-p30304p88444.bz2"  # 200mb
     current_part_1 = "s3a://wiki-current-part1/*"
 
-    process = ParseXML(current_file_2)
+    process = ParseXML(current_part_1)
 
     properties = {
         "user": "postgres",
