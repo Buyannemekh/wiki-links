@@ -49,7 +49,7 @@ app.layout = html.Div(children=[
                       'y': query_results_0['frequency'],
                       'type': 'line', 'name': 'updated'}],
             'layout': {
-                'title': 'The most cited Wikipedia pages in the past month'
+                'title': 'How current are the Wikipedia pages right now?'
             }
         }
     )
