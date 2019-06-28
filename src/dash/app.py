@@ -24,7 +24,7 @@ sql_query_0 = "SELECT DATE_TRUNC('month', time_stamp) AS month, + COUNT(*) AS fr
 query_results_0 = pd.read_sql_query(sql_query_0, con)
 links = []
 for i in range(0, query_results_0.shape[0]):
-    links.append(dict(time=query_results_0.iloc[i]['time'], frequency=query_results_0.iloc[i]['frequency']))
+    links.append(dict(time=query_results_0.iloc[i]['month'], frequency=query_results_0.iloc[i]['frequency']))
 print(links)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
