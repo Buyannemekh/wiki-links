@@ -120,20 +120,25 @@ def print_df_count(df):
 
 
 # write link and count data frame from spark to postgres
-def write_to_postgres(df_link_count, jdbc_url):
-    connection_properties = {
-        "user": "postgres",
-        "password": "$password",
-        "driver": "org.postgresql.Driver"
-    }
-
-    df_link_count.select('page_id', 'page_title', 'revision_id', 'link', 'time_stamp', 'link_count').\
+def write_pages_to_postgres(df_pages, jdbc_url, connection_properties):
+    df_pages.select('page_id', 'page_title', 'time_stamp', 'links', 'link_cnt').\
         write.jdbc(url=jdbc_url,
-                   table='pages_links',
+                   table='pages',
                    properties=connection_properties,
                    mode='append')
 
-    print("POSTGRESQL DONE")
+    print("PAGES DONE")
+
+
+# write link and count data frame from spark to postgres
+def write_links_to_postgres(df_links, jdbc_url, connection_properties):
+    df_links.select('page_id', 'page_title', 'link').\
+        write.jdbc(url=jdbc_url,
+                   table='links',
+                   properties=connection_properties,
+                   mode='append')
+
+    print("PAGES DONE")
 
 
 if __name__ == "__main__":
@@ -144,11 +149,19 @@ if __name__ == "__main__":
 
     process = ParseXML(current_file_2)
 
-    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    # database = "wikimain"
-    # port = "5432"
-    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    # write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
+    properties = {
+        "user": "postgres",
+        "password": "$password",
+        "driver": "org.postgresql.Driver"
+    }
+
+    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    database = "wikicurrent"
+    port = "5432"
+    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+
+    write_pages_to_postgres(df_pages=process.page_id_links, jdbc_url=url, connection_properties=properties)
+    write_links_to_postgres(df_links=process.page_df_id_link_time, jdbc_url=url, connection_properties=properties)
 
 
 
