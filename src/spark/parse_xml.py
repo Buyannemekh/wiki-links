@@ -17,9 +17,9 @@ class ParseXML:
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
         self.df_main_pages = self.get_page_df_from_xml()  # reading xml and extracting main pages
-        # self.page_df_text = self.get_page_text_column()  # data frame with text
-        # self.page_id_title = self.get_df_with_page_id_title()  # df only article title and ID
-        # self.page_id_links = self.get_df_article_id_links()  # page id and links in list
+        self.page_df_text = self.get_page_text_column()  # data frame with text
+        self.page_id_title = self.get_df_with_page_id_title()  # df only article title and ID
+        self.page_id_links = self.get_df_article_id_links()  # page id and links in list
         #
         # self.page_df_links = self.create_df_of_links()   # data frame with links
         # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
@@ -69,10 +69,10 @@ class ParseXML:
         df = self.page_df_text.withColumn('links',
                                           find_links_udf(self.page_df_text.text))
 
-        # dataframe with article id, revision timestamp, array of links in the text
         df_links = df.select(f.col('page_id'),
                              f.col('links'))
 
+        print_df_count(df_links) if self.print_table_info else None
         return df_links
 
     # PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINKS: list with 1 element
@@ -156,33 +156,33 @@ def write_to_postgres(df_link_count, jdbc_url):
     print("POSTGRESQL DONE")
 
 
-# if __name__ == "__main__":
-#     large_data = "s3a://wiki-history/history1.xml-p10572p11357.bz2"   # 2gb
-#     medium_file = "s3a://wiki-history/history18.xml-p13693074p13784345.bz2"  # 800mb
-#     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
-#     small_rev_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799rev"
-#     current_file = "s3a://wiki-meta/meta-current1.xml.bz2"  #200mb
-#     current_large_file = "s3a://wiki-meta/meta-current27.xml.bz2"  #628mb
-#     current_file_2 = "s3a://wiki-current-part2/current2.xml-p30304p88444.bz2"  # 200mb
-#
-#     current_part_1 = "s3a://wiki-current-part1/*"
-#
-#     process = ParseXML(small_file, print_table_info=True)
-#     # process.get_page_df_from_xml()
-#     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
-#
-#     # print_df_count(process.page_df_text)
-#     # print_df_count(process.page_df_links)
-#     # print_df_count(process.page_df_id_link_time)
-#
-#     df_count_links = process.count_num_each_link_in_page()
-#     print_df_count(df_count_links)
-#
-#     # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-#     # database = "wikimain"
-#     # port = "5432"
-#     # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-#     # write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
+if __name__ == "__main__":
+    large_data = "s3a://wiki-history/history1.xml-p10572p11357.bz2"   # 2gb
+    medium_file = "s3a://wiki-history/history18.xml-p13693074p13784345.bz2"  # 800mb
+    small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
+    small_rev_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799rev"
+    current_file = "s3a://wiki-meta/meta-current1.xml.bz2"  #200mb
+    current_large_file = "s3a://wiki-meta/meta-current27.xml.bz2"  #628mb
+    current_file_2 = "s3a://wiki-current-part2/current2.xml-p30304p88444.bz2"  # 200mb
+
+    current_part_1 = "s3a://wiki-current-part1/*"
+
+    process = ParseXML(small_file, print_table_info=True)
+    # process.get_page_df_from_xml()
+    # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
+
+    # print_df_count(process.page_df_text)
+    # print_df_count(process.page_df_links)
+    # print_df_count(process.page_df_id_link_time)
+
+    # df_count_links = process.count_num_each_link_in_page()
+    # print_df_count(df_count_links)
+
+    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    # database = "wikimain"
+    # port = "5432"
+    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    # write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
 
 
 
