@@ -9,23 +9,25 @@ import pandas as pd
 # Settings for psycopg Timescale connector
 user = 'postgres'
 host = 'ec2-34-239-95-229.compute-1.amazonaws.com'
-dbname = 'wiki'
+dbname = 'wikicurrent'
 con = psycopg2.connect(database=dbname, user=user, password='$password', host=host)
 
 
 # Query database to load landing page graph
-sql_query_0 = "SELECT link, COUNT(*) FROM pages_links " + \
-              "WHERE time_stamp BETWEEN '2019-06-01' AND CURRENT_TIMESTAMP " + \
-              "GROUP BY link ORDER BY COUNT(*) DESC LIMIT 20"
+# sql_query_0 = "SELECT link, COUNT(*) FROM pages_links " + \
+#               "WHERE time_stamp BETWEEN '2019-06-01' AND CURRENT_TIMESTAMP " + \
+#               "GROUP BY link ORDER BY COUNT(*) DESC LIMIT 20"
+
+sql_query_0 = "SELECT DATE_TRUNC('month', time_stamp) AS month, + COUNT(*) AS frequency " + \
+              "FROM pages GROUP BY month LIMIT 10;"
 
 query_results_0 = pd.read_sql_query(sql_query_0, con)
 links = []
 for i in range(0, query_results_0.shape[0]):
-    links.append(dict(time=query_results_0.iloc[i]['link'], frequency=query_results_0.iloc[i]['count']))
+    links.append(dict(time=query_results_0.iloc[i]['time'], frequency=query_results_0.iloc[i]['frequency']))
 print(links)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 
@@ -43,7 +45,9 @@ app.layout = html.Div(children=[
     dcc.Graph(
         id='example-graph',
         figure={
-            'data': [{'x': query_results_0['link'], 'y': query_results_0['count'], 'type': 'bar', 'name': 'Links'}],
+            'data': [{'x': query_results_0['month'],
+                      'y': query_results_0['frequency'],
+                      'type': 'line', 'name': 'updated'}],
             'layout': {
                 'title': 'The most cited Wikipedia pages in the past month'
             }
