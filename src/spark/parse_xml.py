@@ -16,32 +16,31 @@ class ParseXML:
         self.row_tag_revision = "revision"
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
-        self.df_main_pages = self.get_page_df_from_xml()
-        self.page_df_text = self.get_article_text_column()  # data frame with text
-        self.page_df_links = self.create_df_of_links()   # data frame with links
-        self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
+        self.df_main_pages = self.get_page_df_from_xml()  # reading xml and extracting main pages
+        # self.page_df_text = self.get_page_text_column()  # data frame with text
+        # self.page_id_title = self.get_df_with_page_id_title()  # df only article title and ID
+        # self.page_id_links = self.get_df_article_id_links()  # page id and links in list
+        #
+        # self.page_df_links = self.create_df_of_links()   # data frame with links
+        # self.page_df_id_link_time = self.explode_links()   # data frame with exploded links
 
     # parse xml and extract information under page tag, filter only main articles
     def get_page_df_from_xml(self):
-
         page_df = self.spark.read\
             .format(self.format) \
             .option("excludeAttribute", "false")\
             .options(rowTag=self.row_tag_page)\
             .load(self.file)
-
         print_df_count(page_df) if self.print_table_info else None
 
         # Filter only main articles by its namespace and pages that are not redirecting
         main_articles = page_df.filter((page_df.ns == 0) & (f.isnull('redirect')))
-
         print_df_count(main_articles) if self.print_table_info else None
 
         return main_articles
 
-    # go to revision tag and get text information of the page
-    def get_article_text_column(self):
-
+    # PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, TEXT: list with 1 element
+    def get_page_text_column(self):
         df_articles_text = self.df_main_pages.select(f.col('id').alias('page_id'),
                                                      f.col('title').alias('page_title'),
                                                      f.col('revision.id').alias("revision_id"),
@@ -49,17 +48,34 @@ class ParseXML:
                                                      f.col('revision.text'))
 
         df_articles_text = df_articles_text.withColumn("time_stamp", df_articles_text.timestamp.cast(TimestampType()))
-
         if self.print_table_info:
             print_df_count(df_articles_text)
 
         return df_articles_text
 
-    def get_df_with_article_id_title(self):
+    # PAGE ID: int, PAGE TITLE: str
+    def get_df_with_page_id_title(self):
+        df_article_id_title = self.df_main_pages.select(f.col('id').alias('page_id'),
+                                                        f.col('title').alias('page_title')).distinct()
 
-        pass
+        print_df_count(df_article_id_title) if self.print_table_info else None
+        return df_article_id_title
 
-    # extract links from the text and create data frame with list of link titles
+    # PAGE ID: int, LINKS: list
+    def get_df_article_id_links(self):
+        find_links_udf = udf(find_links, ArrayType(StringType()))
+
+        # find links from the text column using regex with udf from df with text column
+        df = self.page_df_text.withColumn('links',
+                                          find_links_udf(self.page_df_text.text))
+
+        # dataframe with article id, revision timestamp, array of links in the text
+        df_links = df.select(f.col('page_id'),
+                             f.col('links'))
+
+        return df_links
+
+    # PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINKS: list with 1 element
     def create_df_of_links(self):
 
         find_links_udf = udf(find_links, ArrayType(StringType()))
@@ -77,7 +93,7 @@ class ParseXML:
 
         return df_links
 
-    # create column with a single link
+    # (each link is a row):  PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINK: str
     def explode_links(self):
         # create column of single link name
         df_id_link_time = self.page_df_links.withColumn("link", explode(self.page_df_links.links))
@@ -140,33 +156,33 @@ def write_to_postgres(df_link_count, jdbc_url):
     print("POSTGRESQL DONE")
 
 
-if __name__ == "__main__":
-    large_data = "s3a://wiki-history/history1.xml-p10572p11357.bz2"   # 2gb
-    medium_file = "s3a://wiki-history/history18.xml-p13693074p13784345.bz2"  # 800mb
-    small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
-    small_rev_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799rev"
-    current_file = "s3a://wiki-meta/meta-current1.xml.bz2"  #200mb
-    current_large_file = "s3a://wiki-meta/meta-current27.xml.bz2"  #628mb
-    current_file_2 = "s3a://wiki-current-part2/current2.xml-p30304p88444.bz2"  # 200mb
-
-    current_part_1 = "s3a://wiki-current-part1/*"
-
-    process = ParseXML(small_file, print_table_info=True)
-    # process.get_page_df_from_xml()
-    # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
-
-    # print_df_count(process.page_df_text)
-    # print_df_count(process.page_df_links)
-    # print_df_count(process.page_df_id_link_time)
-
-    df_count_links = process.count_num_each_link_in_page()
-    print_df_count(df_count_links)
-
-    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    # database = "wikimain"
-    # port = "5432"
-    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    # write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
+# if __name__ == "__main__":
+#     large_data = "s3a://wiki-history/history1.xml-p10572p11357.bz2"   # 2gb
+#     medium_file = "s3a://wiki-history/history18.xml-p13693074p13784345.bz2"  # 800mb
+#     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
+#     small_rev_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799rev"
+#     current_file = "s3a://wiki-meta/meta-current1.xml.bz2"  #200mb
+#     current_large_file = "s3a://wiki-meta/meta-current27.xml.bz2"  #628mb
+#     current_file_2 = "s3a://wiki-current-part2/current2.xml-p30304p88444.bz2"  # 200mb
+#
+#     current_part_1 = "s3a://wiki-current-part1/*"
+#
+#     process = ParseXML(small_file, print_table_info=True)
+#     # process.get_page_df_from_xml()
+#     # df_id_link_count = process.page_df_id_link_time.groupby("id", "link").count().sort(desc("count"))
+#
+#     # print_df_count(process.page_df_text)
+#     # print_df_count(process.page_df_links)
+#     # print_df_count(process.page_df_id_link_time)
+#
+#     df_count_links = process.count_num_each_link_in_page()
+#     print_df_count(df_count_links)
+#
+#     # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+#     # database = "wikimain"
+#     # port = "5432"
+#     # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+#     # write_to_postgres(df_link_count=df_count_links, jdbc_url=url)
 
 
 
