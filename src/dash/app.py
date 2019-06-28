@@ -19,7 +19,7 @@ con = psycopg2.connect(database=dbname, user=user, password='$password', host=ho
 #               "GROUP BY link ORDER BY COUNT(*) DESC LIMIT 20"
 
 sql_query_0 = "SELECT DATE_TRUNC('month', time_stamp) AS month, + COUNT(*) AS frequency " + \
-              "FROM pages GROUP BY month LIMIT 10;"
+              "FROM pages GROUP BY month"
 
 query_results_0 = pd.read_sql_query(sql_query_0, con)
 links = []
