@@ -1,10 +1,8 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from pyspark.sql import functions as f
-from pyspark.sql.functions import desc
 from pyspark.sql.functions import explode
 from pyspark.sql.functions import udf
-from pyspark.sql.functions import col, count
 
 
 class ParseXML:
@@ -15,12 +13,10 @@ class ParseXML:
         self.row_tag_revision = "revision"
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
-        self.df_main_pages_text = self.get_page_text_column(print_table_info=True)
-        self.page_df_text = self.get_page_text_column(print_table_info=True)  # data frame with text
-        self.page_id_title = self.get_df_with_page_id_title(print_table_info=True)  # df only article title and ID
-        self.page_id_links = self.get_df_article_id_links(print_table_info=True)  # page id and links in list
-        #
-        # self.page_df_links = self.create_df_of_links()   # data frame with links
+        self.df_main_pages_text = self.get_page_text_column(print_table_info=False)
+        self.page_df_text = self.get_page_text_column(print_table_info=False)  # data frame with text
+        self.page_id_title = self.get_df_with_page_id_title(print_table_info=False)  # df only article title and ID
+        self.page_id_links = self.get_df_article_id_links(print_table_info=False)  # page id and links in list
         self.page_df_id_link_time = self.explode_links(print_table_info=True)   # data frame with exploded links
 
     # parse xml and extract information under page tag, filter only main articles
@@ -90,10 +86,10 @@ class ParseXML:
 
         return page_df_id_link_time
 
-    def count_num_each_link_in_page(self):
-        df = self.page_df_id_link_time.groupby("page_title", "link").\
-            agg(f.count(f.lit(1)).alias("link_count"))
-        return df
+    # def count_num_each_link_in_page(self):
+    #     df = self.page_df_id_link_time.groupby("page_title", "link").\
+    #         agg(f.count(f.lit(1)).alias("link_count"))
+    #     return df
 
 
 # return list of link titles from a text if exist, else return empty list
@@ -141,16 +137,12 @@ def write_to_postgres(df_link_count, jdbc_url):
 
 
 if __name__ == "__main__":
-    large_data = "s3a://wiki-history/history1.xml-p10572p11357.bz2"   # 2gb
-    medium_file = "s3a://wiki-history/history18.xml-p13693074p13784345.bz2"  # 800mb
     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
-    small_rev_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799rev"
-    current_file = "s3a://wiki-meta/meta-current1.xml.bz2"  #200mb
     current_large_file = "s3a://wiki-meta/meta-current27.xml.bz2"  #628mb
     current_file_2 = "s3a://wiki-current-part2/current2.xml-p30304p88444.bz2"  # 200mb
     current_part_1 = "s3a://wiki-current-part1/*"
 
-    process = ParseXML(small_file)
+    process = ParseXML(current_file_2)
 
     # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
     # database = "wikimain"
