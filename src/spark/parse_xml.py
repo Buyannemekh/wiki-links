@@ -100,14 +100,13 @@ class ParseXML:
         df_id_link_time = self.page_id_links.withColumn("link", explode(self.page_id_links.links))
 
         # create dataframe with article id, revision timestamp, link name (dropping links)
-        page_df_id_link_time = df_id_link_time.select(f.col('page_id'),
-                                                      f.col('page_title'),
+        page_df_id_link_time = df_id_link_time.select(f.col('page_title'),
                                                       f.col('link'))
 
         return page_df_id_link_time
 
     def count_num_each_link_in_page(self):
-        df = self.page_df_id_link_time.groupby("page_id", "page_title", "link").\
+        df = self.page_df_id_link_time.groupby("page_title", "link").\
             agg(f.count(f.lit(1)).alias("link_count"))
         return df
 
