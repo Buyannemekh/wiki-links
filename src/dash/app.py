@@ -4,6 +4,7 @@ import dash_html_components as html
 from datetime import datetime as dt
 import psycopg2
 import pandas as pd
+import dash_table
 
 
 # Settings for psycopg Timescale connector
@@ -18,8 +19,12 @@ con = psycopg2.connect(database=dbname, user=user, password='$password', host=ho
 #               "WHERE time_stamp BETWEEN '2019-06-01' AND CURRENT_TIMESTAMP " + \
 #               "GROUP BY link ORDER BY COUNT(*) DESC LIMIT 20"
 
+sql_tot_pages = "SELECT COUNT(*) FROM pages;"
+d= {'col1': ["Totol number of pages"], 'col2': [sql_tot_pages]}
+df = pd.DataFrame(data=d)
+
 sql_query_0 = "SELECT DATE_TRUNC('month', time_stamp) AS month, + COUNT(*) AS frequency " + \
-              "FROM pages GROUP BY month"
+              "FROM pages GROUP BY month;"
 
 query_results_0 = pd.read_sql_query(sql_query_0, con)
 links = []
@@ -29,6 +34,13 @@ print(links)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+
+app.layout = dash_table.DataTable(
+    id='table',
+    columns=[{"name": i, "id": i} for i in df.columns],
+    data=df.to_dict('records'),
+)
 
 
 app.layout = html.Div(children=[
