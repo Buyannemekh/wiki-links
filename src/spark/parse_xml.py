@@ -15,7 +15,7 @@ class ParseXML:
         self.row_tag_id = 'id'
         self.df_main_pages = self.get_page_df_from_xml(print_table_info=False)
         self.page_id_title = self.get_df_with_page_id_title(print_table_info=False)  # df only article title and ID
-        self.page_id_links = self.get_df_article_id_links(print_table_info=True)  # page id and links in list
+        self.page_id_links = self.get_df_page_id_links(print_table_info=True)  # page id and links in list
         self.page_df_id_link_time = self.explode_links(print_table_info=True)   # data frame with exploded links
 
     # parse xml and extract information under page tag, filter only main articles
@@ -60,7 +60,7 @@ class ParseXML:
         return df_article_id_title
 
     # PAGE ID: int, PAGE TITLE: str, TIMESTAMP, LINKS: list, LINK_COUNT: int
-    def get_df_article_id_links(self, print_table_info: bool):
+    def get_df_page_id_links(self, print_table_info: bool):
         find_links_udf = udf(find_links, ArrayType(StringType()))
 
         df_pages_text = self.get_page_text_column(print_table_info=print_table_info)
@@ -77,8 +77,6 @@ class ParseXML:
 
     # (each link is a row):  PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINK: str
     def explode_links(self, print_table_info: bool):
-        page_id_links = self.get_df_article_id_links(print_table_info=print_table_info)
-
         # create column of single link name
         df_id_link_time = self.page_id_links.withColumn("link", explode(self.page_id_links.links))
 
@@ -138,7 +136,7 @@ def write_links_to_postgres(df_links, jdbc_url, connection_properties):
                    mode='append')
 
     print("LINKS DONE")
-    
+
 
 if __name__ == "__main__":
     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
