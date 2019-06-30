@@ -2,7 +2,7 @@ import psycopg2
 
 connection = psycopg2.connect(host='xxxx',
                               database='test',
-                              user='postgres', password='$password')
+                              user='xxxx', password='xxxx')
 
 cursor = connection.cursor()
 

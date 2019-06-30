@@ -13,79 +13,68 @@ class ParseXML:
         self.row_tag_revision = "revision"
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
-        self.df_main_pages = self.get_page_df_from_xml(print_table_info=False)
+        self.df_main_pages_text = self.get_page_text_column(print_table_info=False)
+        self.page_df_text = self.get_page_text_column(print_table_info=False)  # data frame with text
         self.page_id_title = self.get_df_with_page_id_title(print_table_info=False)  # df only article title and ID
-        self.page_id_links = self.get_df_page_id_links(print_table_info=True)  # page id and links in list
+        self.page_id_links = self.get_df_article_id_links(print_table_info=True)  # page id and links in list
         self.page_df_id_link_time = self.explode_links(print_table_info=True)   # data frame with exploded links
 
     # parse xml and extract information under page tag, filter only main articles
     def get_page_df_from_xml(self, print_table_info: bool):
-        page_df_raw = self.spark.read.format(self.format)\
-                                     .option("excludeAttribute", "false")\
-                                     .options(rowTag=self.row_tag_page)\
-                                     .load(self.file)
-
-        print_df_count(page_df_raw) if print_table_info else None
-
+        page_df = self.spark.read\
+            .format(self.format) \
+            .option("excludeAttribute", "false")\
+            .options(rowTag=self.row_tag_page)\
+            .load(self.file)
+        print_df_count(page_df) if print_table_info else None
         # Filter only main articles by its namespace and pages that are not redirecting
-        df_main_pages = page_df_raw.filter((page_df_raw.ns == 0) & (isnull('redirect')))
-        print_df_count(df_main_pages) if print_table_info else None
-
-        return df_main_pages
+        main_articles = page_df.filter((page_df.ns == 0) & (isnull('redirect')))
+        print_df_count(main_articles) if print_table_info else None
+        return main_articles
 
     # PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, TEXT: list with 1 element
     def get_page_text_column(self, print_table_info: bool):
-        df_pages_text = self.df_main_pages.select(col('id').alias('page_id'),
-                                                  col('title').alias('page_title'),
-                                                  col('revision.id').alias("revision_id"),
-                                                  col('revision.timestamp'),
-                                                  col('revision.text'))
+        df_main_pages = self.get_page_df_from_xml(print_table_info=print_table_info)
+        df_articles_text = df_main_pages.select(col('id').alias('page_id'),
+                                                col('title').alias('page_title'),
+                                                col('revision.id').alias("revision_id"),
+                                                col('revision.timestamp'),
+                                                col('revision.text'))
+        df_articles_text = df_articles_text.withColumn("time_stamp",
+                                                       df_articles_text.timestamp.cast(TimestampType()))
+        print_df_count(df_articles_text) if print_table_info else None
+        return df_articles_text
 
-        df_pages_text = df_pages_text.withColumn("time_stamp",
-                                                 df_pages_text.timestamp.cast(TimestampType()))
-
-        print_df_count(df_pages_text) if print_table_info else None
-
-        return df_pages_text
-
-    # PAGE ID: int, PAGE TITLE: str, TIMESTAMP
+    # PAGE ID: int, PAGE TITLE: str
     def get_df_with_page_id_title(self, print_table_info: bool):
-        df_pages_text = self.get_page_text_column(print_table_info=print_table_info)
-        df_article_id_title = df_pages_text.select(col('page_id'),
-                                                   col('page_title'),
-                                                   col("time_stamp")).distinct()
-
+        df_article_id_title = self.df_main_pages_text.select(col('page_id'),
+                                                             col('page_title'),
+                                                             col("time_stamp")).distinct()
         print_df_count(df_article_id_title) if print_table_info else None
-
         return df_article_id_title
 
-    # PAGE ID: int, PAGE TITLE: str, TIMESTAMP, LINKS: list, LINK_COUNT: int
-    def get_df_page_id_links(self, print_table_info: bool):
+    # PAGE ID: int, LINKS: list
+    def get_df_article_id_links(self, print_table_info: bool):
         find_links_udf = udf(find_links, ArrayType(StringType()))
-
-        df_pages_text = self.get_page_text_column(print_table_info=print_table_info)
-        df = df_pages_text.withColumn('links', find_links_udf(df_pages_text))
-
+        # find links from the text column using regex with udf from df with text column
+        df = self.page_df_text.withColumn('links', find_links_udf(self.page_df_text.text))
         df_page_count_links = df.select(col('page_id'),
                                         col('page_title'),
                                         col('time_stamp'),
                                         col('links'),
                                         size('links').alias('link_cnt'))
         print_df_count(df_page_count_links) if print_table_info else None
-
         return df_page_count_links
 
     # (each link is a row):  PAGE_ID: int, PAGE_TITLE: str, REVISION_ID: int, TIME_STAMP: timestamp, LINK: str
     def explode_links(self, print_table_info: bool):
         # create column of single link name
         df_id_link_time = self.page_id_links.withColumn("link", explode(self.page_id_links.links))
-
         # create dataframe with article id, revision timestamp, link name (dropping links)
         page_df_id_link_time = df_id_link_time.select(col('page_id'),
                                                       col('page_title'),
                                                       col('link'))
         print_df_count(page_df_id_link_time) if print_table_info else None
-
         return page_df_id_link_time
 
 
