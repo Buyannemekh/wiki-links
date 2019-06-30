@@ -15,10 +15,10 @@ class ParseXML:
         self.row_tag_page = 'page'
         self.row_tag_id = 'id'
         self.df_main_pages = self.get_page_df_from_xml(print_table_info=False)
-        self.page_id_title = self.get_df_with_page_id_title(print_table_info=False)  # df only article title and ID
-        self.page_id_links = self.get_df_article_id_links(print_table_info=True)  # page id and links in list
-        self.page_df_id_link_time = self.explode_links(print_table_info=True)   # data frame with exploded links
-
+        # self.page_id_title = self.get_df_with_page_id_title(print_table_info=False)  # df only article title and ID
+        # self.page_id_links = self.get_df_article_id_links(print_table_info=True)  # page id and links in list
+        # self.page_df_id_link_time = self.explode_links(print_table_info=True)   # data frame with exploded links
+        #
     # parse xml and extract information under page tag, filter only main articles
     def get_page_df_from_xml(self, print_table_info: bool):
         page_df_raw = self.spark.read.format(self.format)\
@@ -113,11 +113,11 @@ class ParseXML:
 #         return []
 #
 #
-# # helper for printing dataframe number of rows and columns
-# def print_df_count(df):
-#     df.printSchema()
-#     print(df.count(), len(df.columns))
-#     df.show()
+# helper for printing dataframe number of rows and columns
+def print_df_count(df):
+    df.printSchema()
+    print(df.count(), len(df.columns))
+    df.show()
 #
 #
 # # write link and count data frame from spark to postgres
