@@ -1,6 +1,8 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import TimestampType, ArrayType, StringType
 from pyspark.sql.functions import col, size, explode, isnull, udf
+import os
+import sys
 
 
 class ParseXML:
@@ -145,18 +147,16 @@ if __name__ == "__main__":
     process = ParseXML(current_part_3)
 
     properties = {
-        "user": "postgres",
-        "password": "$password",
+        "user": os.environ["POSTGRES_USER"],   # postgres
+        "password": os.environ["POSTGRES_PASSWORD"],  #$password
         "driver": "org.postgresql.Driver"
     }
 
-    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    database = "wikicurrent"
+    hostname = os.environ["POSTGRES_URL"]  # "ec2-34-239-95-229.compute-1.amazonaws.com"
+    database = os.environ["POSTGRES_DBNAME"]  # wikicurrent
     port = "5432"
     url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
 
     write_pages_to_postgres(df_pages=process.page_id_links, jdbc_url=url, connection_properties=properties)
     write_links_to_postgres(df_links=process.page_df_id_link_time, jdbc_url=url, connection_properties=properties)
-
-
 
