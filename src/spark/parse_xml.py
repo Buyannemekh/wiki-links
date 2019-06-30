@@ -144,19 +144,23 @@ if __name__ == "__main__":
     current_part_2 = "s3a://wiki-current-part2/*"
     current_part_3 = "s3a://wiki-current-part3/*"
 
-    process = ParseXML(current_part_3)
+    os.environ["POSTGRES_URL"] = sys.argv[1]  # "ec2-34-239-95-229.compute-1.amazonaws.com"
+    os.environ["POSTGRES_USER"] = sys.argv[2]  # postgres
+    os.environ["POSTGRES_PASSWORD"] = sys.argv[3]  # $password
+    os.environ["POSTGRES_DBNAME"] = sys.argv[4]   # wikicurrent or test
+
+    process = ParseXML(small_file)
 
     properties = {
-        "user": os.environ["POSTGRES_USER"],   # postgres
-        "password": os.environ["POSTGRES_PASSWORD"],  #$password
+        "user": os.environ["POSTGRES_USER"],  # postgres
+        "password": os.environ["POSTGRES_PASSWORD"],  # $password
         "driver": "org.postgresql.Driver"
     }
 
     hostname = os.environ["POSTGRES_URL"]  # "ec2-34-239-95-229.compute-1.amazonaws.com"
-    database = os.environ["POSTGRES_DBNAME"]  # wikicurrent
+    database = os.environ["POSTGRES_DBNAME"]  # "wikicurrent"
     port = "5432"
     url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
 
     write_pages_to_postgres(df_pages=process.page_id_links, jdbc_url=url, connection_properties=properties)
     write_links_to_postgres(df_links=process.page_df_id_link_time, jdbc_url=url, connection_properties=properties)
-
