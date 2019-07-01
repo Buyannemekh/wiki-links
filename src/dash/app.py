@@ -63,13 +63,15 @@ current_count = html.Div([dcc.Graph(
         }
     )])
 
-datepick = html.Div([dcc.DatePickerSingle(
-                            id='datepicker',
-                            min_date_allowed = dt(2016, 7, 1),
-                            max_date_allowed = dt(2017, 6, 30),
-                            initial_visible_month = dt(2016, 11, 1))
+datepick = html.Div([dcc.DatePickerRange(
+                            id='my-date-picker-range-1',
+                            min_date_allowed=dt(2010, 7, 1),
+                            max_date_allowed=dt.today(),
+                            initial_visible_month=dt(2019, 6, 1),
+                            start_date=dt(2018, 1, 1),
+                            end_date=dt(2019, 6, 1)),
                     ],
-                    style = {'width': '100%', 'display': 'inline-block'})
+                    style={'width': '100%', 'display': 'inline-block'})
 
 
 app.layout = html.Div(children=[
