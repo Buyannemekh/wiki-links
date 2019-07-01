@@ -5,13 +5,21 @@ from datetime import datetime as dt
 import psycopg2
 import pandas as pd
 import dash_table
+import os
+import sys
 
+
+os.environ["POSTGRES_HOSTNAME"] = sys.argv[1]
+os.environ["POSTGRES_USER"] = sys.argv[2]
+os.environ["POSTGRES_PASSWORD"] = sys.argv[3]
+os.environ["POSTGRES_DBNAME"] = sys.argv[4]
 
 # Settings for psycopg Timescale connector
-user = 'postgres'
-host = 'ec2-34-239-95-229.compute-1.amazonaws.com'
-dbname = 'wikicurrent'
-con = psycopg2.connect(database=dbname, user=user, password='$password', host=host)
+user = os.environ["POSTGRES_USER"]
+host = os.environ["POSTGRES_HOSTNAME"]
+password = os.environ["POSTGRES_PASSWORD"]
+dbname = os.environ["POSTGRES_DBNAME"]
+con = psycopg2.connect(database=dbname, user=user, password=password, host=host)
 
 
 # Query database to load landing page graph
@@ -59,7 +67,7 @@ app.layout = html.Div(children=[
                    }),
     html.H5("Pick the date you are interested in:"),
     datepick,
-    
+
     html.Div(children='''
         Dash: A web application framework for Python.
     '''),
