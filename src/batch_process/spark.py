@@ -5,6 +5,9 @@ import os
 import sys
 
 
+from src.postgres.write_to_postgres import PostgresConnector
+
+
 class ParseXML:
     def __init__(self, file):
         self.file = file
@@ -105,7 +108,7 @@ def print_df_count(df):
     df.show()
 
 
-# write link and count data frame from spark to postgres
+# write link and count data frame from batch_process to postgres
 def write_pages_to_postgres(df_pages, jdbc_url, connection_properties):
     df_pages.select('page_id', 'page_title', 'time_stamp', 'links', 'link_cnt').\
         write.jdbc(url=jdbc_url,
@@ -116,7 +119,7 @@ def write_pages_to_postgres(df_pages, jdbc_url, connection_properties):
     print("PAGES DONE")
 
 
-# write link and count data frame from spark to postgres
+# write link and count data frame from batch_process to postgres
 def write_links_to_postgres(df_links, jdbc_url, connection_properties):
     df_links.select('page_id', 'page_title', 'link').\
         write.jdbc(url=jdbc_url,
@@ -142,11 +145,13 @@ if __name__ == "__main__":
 
     process = ParseXML(current_file_2)
 
-    properties = {
-        "user": os.environ["POSTGRES_USER"],
-        "password": os.environ["POSTGRES_PASSWORD"],
-        "driver": "org.postgresql.Driver"
-    }
+
+
+    # properties = {
+    #     "user": os.environ["POSTGRES_USER"],
+    #     "password": os.environ["POSTGRES_PASSWORD"],
+    #     "driver": "org.postgresql.Driver"
+    # }
     #
     # hostname = os.environ["POSTGRES_HOSTNAME"]
     # database = os.environ["POSTGRES_DBNAME"]

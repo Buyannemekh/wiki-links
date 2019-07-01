@@ -4,6 +4,11 @@ from pyspark.sql.functions import explode
 from pyspark.sql.functions import udf
 from pyspark.sql.functions import col, count
 import re
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/src")
+from test.test_postgres import *
 
 
 class Pipeline:
@@ -47,38 +52,38 @@ class Pipeline:
         return self.df_link_count
 
 
-# return list of link titles from a text if exist, else return empty list
-def find_links(text):
-    try:
-        match_list = re.findall('\[\[[^\[\]]+\]\]', text[0])
-        return match_list
-    except:
-        return []
+# # return list of link titles from a text if exist, else return empty list
+# def find_links(text):
+#     try:
+#         match_list = re.findall('\[\[[^\[\]]+\]\]', text[0])
+#         return match_list
+#     except:
+#         return []
 
-
-# write link and count data frame from spark to postgres
-def write_to_postgres(df_link_count, jdbc_url):
-    connection_properties = {
-        "user": "postgres",
-        "password": "$password",
-        "driver": "org.postgresql.Driver"
-    }
-
-    df_link_count.select('link', 'link_count').\
-        write.jdbc(url=jdbc_url,
-                   table='wiki_links',
-                   properties=connection_properties,
-                   mode='overwrite')
-
-    print("POSTGRESQL DONE")
+#
+# # write link and count data frame from batch_process to postgres
+# def write_to_postgres(df_link_count, jdbc_url):
+#     connection_properties = {
+#         "user": "postgres",
+#         "password": "$password",
+#         "driver": "org.postgresql.Driver"
+#     }
+#
+#     df_link_count.select('link', 'link_count').\
+#         write.jdbc(url=jdbc_url,
+#                    table='wiki_links',
+#                    properties=connection_properties,
+#                    mode='overwrite')
+#
+#     print("POSTGRESQL DONE")
 
 
 if __name__ == "__main__":
     input_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"
     pipeline = Pipeline(input_file)
 
-    hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
-    database = "wiki"
-    port = "5432"
-    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-    write_to_postgres(df_link_count=pipeline.df_link_count, jdbc_url=url)
+    # hostname = "ec2-34-239-95-229.compute-1.amazonaws.com"
+    # database = "wiki"
+    # port = "5432"
+    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    # write_to_postgres(df_link_count=pipeline.df_link_count, jdbc_url=url)

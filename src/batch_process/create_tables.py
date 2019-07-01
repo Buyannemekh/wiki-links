@@ -1,7 +1,7 @@
-# from src.spark.parse_xml import *
+# from src.batch_process.parse_xml import *
 # from pyspark.sql.types import *
 # from pyspark.sql import functions as f
-from src.spark.parse_xml import *
+from src.batch_process.spark import *
 
 
 class CreateDataFrames:
@@ -35,4 +35,4 @@ def print_df_count(df):
 if __name__ == "__main__":
     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"  # 50mb
     process = ParseXML(file=small_file)
-    create_tables = CreateDataFrames(main_rdd=process.df_main_pages, print_table_info=True)
+    create_tables = CreateDataFrames(main_rdd=process.df_main_pages_text, print_table_info=True)
