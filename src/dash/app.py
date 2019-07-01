@@ -42,6 +42,14 @@ app.layout = dash_table.DataTable(
     data=df.to_dict('records'),
 )
 
+datepick = html.Div([dcc.DatePickerSingle(
+                            id='datepicker',
+                            min_date_allowed = dt(2016, 7, 1),
+                            max_date_allowed = dt(2017, 6, 30),
+                            initial_visible_month = dt(2016, 11, 1))
+                    ],
+                    style = {'width': '100%', 'display': 'inline-block'})
+
 
 app.layout = html.Div(children=[
     html.H1(children='Wiki Links',
@@ -49,7 +57,9 @@ app.layout = html.Div(children=[
                    'margin-top': '80px',
                    'margin-bottom': '80px'
                    }),
-
+    html.H5("Pick the date you are interested in:"),
+    datepick,
+    
     html.Div(children='''
         Dash: A web application framework for Python.
     '''),
