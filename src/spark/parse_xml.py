@@ -140,7 +140,7 @@ if __name__ == "__main__":
     os.environ["POSTGRES_PASSWORD"] = sys.argv[3]
     os.environ["POSTGRES_DBNAME"] = sys.argv[4]
 
-    process = ParseXML(small_file)
+    process = ParseXML(current_file_2)
 
     properties = {
         "user": os.environ["POSTGRES_USER"],

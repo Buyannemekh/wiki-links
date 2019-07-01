@@ -65,9 +65,6 @@ app.layout = html.Div(children=[
                    'margin-top': '80px',
                    'margin-bottom': '80px'
                    }),
-    html.H5("Pick the date you are interested in:"),
-    datepick,
-
     html.Div(children='''
         Dash: A web application framework for Python.
     '''),
@@ -82,7 +79,11 @@ app.layout = html.Div(children=[
                 'title': 'How current are the Wikipedia pages right now?'
             }
         }
-    )
+    ),
+
+    html.H5("Pick the date you are interested in:"),
+    datepick,
+
 ])
 
 
