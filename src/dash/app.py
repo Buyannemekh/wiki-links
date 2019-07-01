@@ -57,7 +57,17 @@ current_count = html.Div([dcc.Graph(
                       'y': query_results_0['frequency'],
                       'type': 'line', 'name': 'updated'}],
             'layout': {
-                'title': 'How current are the Wikipedia pages right now?'
+                'title': 'How current are the Wikipedia pages right now?',
+                'titlefont': {'size': 60},
+                'yaxis': {'tickfont': {'size': 30}},
+                'xaxis': {
+                    'type': 'date',
+                    'tickformat': '%Y-%m-%d',
+                    'tickmode': 'linear',
+                    'automargin': True,
+                    'dtick': 86400000.0 * 7, #one day * n
+                    'tickfont': dict(size=30),
+                },
             }
         }
     )])
