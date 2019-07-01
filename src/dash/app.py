@@ -57,7 +57,7 @@ current_count = html.Div([dcc.Graph(
                       'y': query_results_0['frequency'],
                       'type': 'line', 'name': 'updated'}],
             'layout': {
-                'title': 'How current are the Wikipedia pages right now?',
+                'title': 'How up to date is Wikipedia?',
                 'titlefont': {'size': 35},
             }
         }
