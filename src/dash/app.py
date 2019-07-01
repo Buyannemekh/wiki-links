@@ -69,7 +69,7 @@ app.layout = html.Div(children=[
         Dash: A web application framework for Python.
     '''),
 
-    html.Div[dcc.Graph(
+    html.Div([dcc.Graph(
         id='example-graph',
         figure={
             'data': [{'x': query_results_0['month'],
@@ -79,10 +79,10 @@ app.layout = html.Div(children=[
                 'title': 'How current are the Wikipedia pages right now?'
             }
         }
-    )],
+    )]),
 
     html.H5("Pick the date you are interested in:"),
-    datepick
+    datepick,
 
 ])
 
