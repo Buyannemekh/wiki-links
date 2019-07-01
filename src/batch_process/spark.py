@@ -5,7 +5,7 @@ import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/src")
-from postgres.write_to_postgres import PostgresConnector
+from src.batch_process.postgres import *
 
 
 class ParseXML:
