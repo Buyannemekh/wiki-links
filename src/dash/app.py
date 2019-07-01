@@ -5,6 +5,7 @@ from datetime import datetime as dt
 import psycopg2
 import pandas as pd
 import dash_table
+from dash.dependencies import Input, Output
 import os
 import sys
 
@@ -21,11 +22,9 @@ password = os.environ["POSTGRES_PASSWORD"]
 dbname = os.environ["POSTGRES_DBNAME"]
 con = psycopg2.connect(database=dbname, user=user, password=password, host=host)
 
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-# Query database to load landing page graph
-# sql_query_0 = "SELECT link, COUNT(*) FROM pages_links " + \
-#               "WHERE time_stamp BETWEEN '2019-06-01' AND CURRENT_TIMESTAMP " + \
-#               "GROUP BY link ORDER BY COUNT(*) DESC LIMIT 20"
 
 sql_tot_pages = "SELECT COUNT(*) FROM pages;"
 d= {'col1': ["Totol number of pages"], 'col2': [sql_tot_pages]}
@@ -40,8 +39,16 @@ for i in range(0, query_results_0.shape[0]):
     links.append(dict(time=query_results_0.iloc[i]['month'], frequency=query_results_0.iloc[i]['frequency']))
 
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+def get_rank_table(start_date, end_date, hour, conn):
+    sql = "SELECT * FROM pages WHERE time_stamp BETWEEN " + start_date + " AND " + end_date + " " +\
+          "ORDER BY time_stamp LIMIT 10;"
+    cur = conn.cursor()
+    cur.execute(sql)
+    col = ['page_id', 'page_title', 'time_stamp', 'links', 'link_cnt']
+    df = pd.DataFrame(cur.fetchall(), columns=col)
+    conn.commit()
+    cur.close()
+    return df
 
 
 app.layout = dash_table.DataTable(
@@ -84,8 +91,29 @@ app.layout = html.Div(children=[
 
     html.H5("Pick the date you are interested in:"),
     datepick
-
 ])
+
+
+@app.callback(
+    Output('toptable', 'children'),
+    [Input('datepicker', 'date'), Input('hourpicker', 'value')]
+)
+
+def display_tables(date, selected_values):
+    # selected_values: hour session(0-23) / daily(24)
+
+    df = None
+    if date is not None:
+        date = dt.strptime(date, '%Y-%m-%d')
+        date_str = date.strftime('%Y%m%d')
+        if selected_values == 24:
+            df = q.get_rank_daily_table(date_str, conn)
+        elif selected_values is not None:
+            df = q.get_rank_table(date_str, selected_values, conn)
+    else:
+        print('date not selected!')
+    print('Successfully get rank table...')
+    return dtab.DataTable(rows = df.to_dict('records'), columns = ['company_id', 'count'])
 
 
 # Run with `sudo python app2.py` for port 80 (needs sudo permission)
