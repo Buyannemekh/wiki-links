@@ -4,8 +4,8 @@ from pyspark.sql.functions import col, size, explode, isnull, udf
 import os
 import sys
 
-
-from src.postgres.write_to_postgres import PostgresConnector
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/src")
+from postgres.write_to_postgres import PostgresConnector
 
 
 class ParseXML:

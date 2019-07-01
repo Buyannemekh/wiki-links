@@ -7,8 +7,8 @@ import re
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/src")
-from test.test_postgres import *
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/test")
+from test_postgres import *
 
 
 class Pipeline:
