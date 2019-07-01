@@ -82,7 +82,13 @@ app.layout = html.Div(children=[
     )]),
 
     html.H5("Pick the date you are interested in:"),
-    datepick,
+    html.Div([dcc.DatePickerSingle(
+        id='datepicker',
+        min_date_allowed=dt(2010, 10, 1),
+        max_date_allowed=dt(2019, 6, 1),
+        initial_visible_month=dt(2010, 10, 1))
+    ],
+        style={'width': '100%', 'display': 'inline-block'})
 
 ])
 
