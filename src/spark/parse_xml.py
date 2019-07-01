@@ -147,11 +147,11 @@ if __name__ == "__main__":
         "password": os.environ["POSTGRES_PASSWORD"],
         "driver": "org.postgresql.Driver"
     }
-
-    hostname = os.environ["POSTGRES_HOSTNAME"]
-    database = os.environ["POSTGRES_DBNAME"]
-    port = "5432"
-    url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
-
-    write_pages_to_postgres(df_pages=process.page_id_links, jdbc_url=url, connection_properties=properties)
-    write_links_to_postgres(df_links=process.page_df_id_link_time, jdbc_url=url, connection_properties=properties)
+    #
+    # hostname = os.environ["POSTGRES_HOSTNAME"]
+    # database = os.environ["POSTGRES_DBNAME"]
+    # port = "5432"
+    # url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
+    #
+    # write_pages_to_postgres(df_pages=process.page_id_links, jdbc_url=url, connection_properties=properties)
+    # write_links_to_postgres(df_links=process.page_df_id_link_time, jdbc_url=url, connection_properties=properties)
