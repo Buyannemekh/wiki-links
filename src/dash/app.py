@@ -58,15 +58,15 @@ current_count = html.Div([dcc.Graph(
                       'type': 'line', 'name': 'updated'}],
             'layout': {
                 'title': 'How current are the Wikipedia pages right now?',
-                'titlefont': {'size': 60},
-                'yaxis': {'tickfont': {'size': 30}},
+                'titlefont': {'size': 40},
+                'yaxis': {'tickfont': {'size': 20}},
                 'xaxis': {
                     'type': 'date',
-                    'tickformat': '%Y-%m-%d',
+                    'tickformat': '%Y-%m',
                     'tickmode': 'linear',
                     'automargin': True,
-                    'dtick': 86400000.0 * 7, #one day * n
-                    'tickfont': dict(size=30),
+                    # 'dtick': 86400000.0 * 7, #one day * n
+                    # 'tickfont': dict(size=30),
                 },
             }
         }
