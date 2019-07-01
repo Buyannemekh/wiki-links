@@ -32,7 +32,7 @@ d= {'col1': ["Totol number of pages"], 'col2': [sql_tot_pages]}
 df = pd.DataFrame(data=d)
 
 sql_query_0 = "SELECT DATE_TRUNC('month', time_stamp) AS month, + COUNT(*) AS frequency " + \
-              "FROM pages GROUP BY month;"
+              "FROM pages GROUP BY month ORDER BY month;"
 
 query_results_0 = pd.read_sql_query(sql_query_0, con)
 links = []
