@@ -1,7 +1,7 @@
 # from src.batch_process.parse_xml import *
 # from pyspark.sql.types import *
 # from pyspark.sql import functions as f
-from src.batch_process.spark import *
+from src.batch_process.parse_xml import *
 
 
 class CreateDataFrames:
