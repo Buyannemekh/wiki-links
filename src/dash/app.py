@@ -50,6 +50,18 @@ app.layout = dash_table.DataTable(
     data=df.to_dict('records'),
 )
 
+current_count = html.Div([dcc.Graph(
+        id='example-graph',
+        figure={
+            'data': [{'x': query_results_0['month'],
+                      'y': query_results_0['frequency'],
+                      'type': 'line', 'name': 'updated'}],
+            'layout': {
+                'title': 'How current are the Wikipedia pages right now?'
+            }
+        }
+    )])
+
 datepick = html.Div([dcc.DatePickerSingle(
                             id='datepicker',
                             min_date_allowed = dt(2016, 7, 1),
@@ -65,30 +77,10 @@ app.layout = html.Div(children=[
                    'margin-top': '80px',
                    'margin-bottom': '80px'
                    }),
-    html.Div(children='''
-        Dash: A web application framework for Python.
-    '''),
-
-    html.Div([dcc.Graph(
-        id='example-graph',
-        figure={
-            'data': [{'x': query_results_0['month'],
-                      'y': query_results_0['frequency'],
-                      'type': 'line', 'name': 'updated'}],
-            'layout': {
-                'title': 'How current are the Wikipedia pages right now?'
-            }
-        }
-    )]),
+    current_count,
 
     html.H5("Pick the date you are interested in:"),
-    html.Div([dcc.DatePickerSingle(
-        id='datepicker',
-        min_date_allowed=dt(2010, 10, 1),
-        max_date_allowed=dt(2019, 6, 1),
-        initial_visible_month=dt(2010, 10, 1))
-    ],
-        style={'width': '100%', 'display': 'inline-block'})
+    datepick
 
 ])
 
