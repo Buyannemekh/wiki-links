@@ -2,7 +2,6 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from datetime import datetime as dt
-from IPython.display import HTML
 import dash_table
 import psycopg2
 import pandas as pd
