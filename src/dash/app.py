@@ -2,6 +2,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from datetime import datetime as dt
+from IPython.display import HTML
 import dash_table
 import psycopg2
 import pandas as pd
@@ -105,8 +106,8 @@ def get_page_table(start_date, end_date):
         sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE time_stamp BETWEEN " + \
               start_date_string + " AND " + end_date_string + " ORDER BY time_stamp LIMIT 10;"
         df_page = pd.read_sql_query(sql, con)
-        df_page['page_title'] = df_page.apply(lambda row: '<a href="https://en.wikipedia.org/?curid=/{}">{}</a>'
-                                              .format(row['page_id'], row['page_title']))
+        # df_page['page_title'] = df_page.apply(lambda row: '<a href="https://en.wikipedia.org/?curid=/{}">{}</a>'
+        #                                       .format(row['page_id'], row['page_title']))
     else:
         print('date not selected!')
     return dash_table.DataTable(data=df_page.to_dict('records'),
