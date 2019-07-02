@@ -32,7 +32,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 ## SQL Queries
 sql_tot_pages = "SELECT COUNT(*) FROM pages;"
 d= {'col1': ["Totol number of pages"], 'col2': [sql_tot_pages]}
-df = pd.DataFrame(data=d)
+# df = pd.DataFrame(data=d)
 
 # Monthly frequency of revisions
 sql_query_0 = "SELECT DATE_TRUNC('month', time_stamp) AS month, + COUNT(*) AS frequency " + \
@@ -107,7 +107,8 @@ def get_page_table(start_date, end_date):
         df_page = pd.read_sql_query(sql, con)
     else:
         print('date not selected!')
-    return dash_table.DataTable(rows=df.to_dict('records'), columns=['page_id', 'page_title', 'time_stamp', 'link_cnt'])
+    return dash_table.DataTable(data=df_page.to_dict('records'),
+                                columns=['page_id', 'page_title', 'time_stamp', 'link_cnt'])
 
 
 # Run with `sudo python app2.py` for port 80 (needs sudo permission)
