@@ -11,7 +11,4 @@ df.printSchema()
 df.show()
 print(df.count(), len(df.columns))
 
-df_id_title = df.select(col('id').alias('page_id'), col('title').alias('page_title'))
-df_id_title.printSchema()
-df_id_title.show()
-print(df_id_title.count(), len(df_id_title.columns))
+df.write.parquet("article.parquet")
