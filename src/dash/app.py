@@ -108,7 +108,7 @@ def get_page_table(start_date, end_date):
     else:
         print('date not selected!')
     return dash_table.DataTable(data=df_page.to_dict('records'),
-                                columns=['page_id', 'page_title', 'time_stamp', 'link_cnt'])
+                                columns=[{"name": i, "id": i} for i in df_page.columns])
 
 
 # Run with `sudo python app2.py` for port 80 (needs sudo permission)
