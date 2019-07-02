@@ -2,7 +2,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from datetime import datetime as dt
-import dash_table_experiments as dtab
+import dash_table
 import psycopg2
 import pandas as pd
 import dash_table
@@ -107,7 +107,7 @@ def get_page_table(start_date, end_date):
         df_page = pd.read_sql_query(sql, con)
     else:
         print('date not selected!')
-    return dtab.DataTable(rows=df.to_dict('records'), columns=['page_id', 'page_title', 'time_stamp', 'link_cnt'])
+    return dash_table.DataTable(rows=df.to_dict('records'), columns=['page_id', 'page_title', 'time_stamp', 'link_cnt'])
 
 
 # Run with `sudo python app2.py` for port 80 (needs sudo permission)
