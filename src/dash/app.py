@@ -12,10 +12,10 @@ import sys
 
 
 # Custom CSS styles are stored in assets/heroic-assets.css
-app = dash.Dash(__name__, static_folder='assets')
-app.scripts.config.serve_locally=True
-app.css.config.serve_locally=True
-app.config.suppress_callback_exceptions = True
+# app = dash.Dash(__name__, static_folder='assets')
+# app.scripts.config.serve_locally=True
+# app.css.config.serve_locally=True
+# app.config.suppress_callback_exceptions = True
 
 ## OS
 os.environ["POSTGRES_HOSTNAME"] = sys.argv[1]
@@ -112,6 +112,7 @@ def get_page_table(start_date, end_date):
         sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE time_stamp BETWEEN " + \
               start_date_string + " AND " + end_date_string + " ORDER BY time_stamp LIMIT 10;"
         df_page = pd.read_sql_query(sql, con)
+        print(df_page)
         # df_page['page_title'] = df_page.apply(lambda row: '<a href="https://en.wikipedia.org/?curid=/{}">{}</a>'
         #                                       .format(row['page_id'], row['page_title']))
     else:
