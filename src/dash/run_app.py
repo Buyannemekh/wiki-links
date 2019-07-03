@@ -141,7 +141,7 @@ page_2_layout = html.Div([
     current_count,
 
     html.H5("Pick the time frame that you are interested in:"),
-    datepick, tables, graphs,
+    datepick, graphs, tables,
 
     dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
