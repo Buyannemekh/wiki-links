@@ -84,7 +84,7 @@ def update_output(n_clicks, value):
         df_page_search = pd.read_sql_query(sql, con)
         df_page_links = pd.read_sql_query(sql_link, con)
 
-        links = df_page_links['links'];
+        links = df_page_links['links'][0];
 
         if df_page_search.shape[0] == 0:
             return 'Article named "{}" not found.'.format(value)
