@@ -114,7 +114,7 @@ def get_page_table(start_date, end_date):
         df_page = pd.read_sql_query(sql, con)
         print(df_page)
         df_page['page_title'] = df_page.apply(lambda row: '<a href="https://en.wikipedia.org/?curid=/{0}">{1}</a>'
-                                              .format(row['page_id'], row['page_title']))
+                                              .format(row['page_id'], row['page_title']), axis=1)
     else:
         print('date not selected!')
     return dash_table.DataTable(data=df_page.to_dict('records'),
