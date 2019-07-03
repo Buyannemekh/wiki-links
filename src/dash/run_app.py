@@ -86,8 +86,10 @@ def update_output(n_clicks, value):
             id_page = df_page_search['page_id'][0]
             dt_page = dash_table.DataTable(data=df_page_search.to_dict('records'),
                                            columns=[{"name": i, "id": i} for i in df_page_search.columns])
+            link_page = dcc.Link('Click here to redirect to Wiki page of {}'.format(value),
+                                 href='https://en.wikipedia.org/?curid={}'.format(id_page)),
 
-            return str(id_page), dt_page
+            return link_page, dt_page
     else:
         return 'Please enter Wikipedia article name.'
 
