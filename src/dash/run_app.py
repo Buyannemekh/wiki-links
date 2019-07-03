@@ -57,6 +57,7 @@ index_page = html.Div([
     dcc.Link('Search by date', href='/page-2'),
 ])
 
+
 page_1_layout = html.Div([
     html.H1('Page 1'),
     dcc.Dropdown(
@@ -64,18 +65,34 @@ page_1_layout = html.Div([
         options=[{'label': i, 'value': i} for i in ['LA', 'NYC', 'MTL']],
         value='LA'
     ),
-    html.Div(id='page-1-content'),
-    html.Br(),
+    html.Div(dcc.Input(id='input-box', type='text')),
+    html.Button('Submit', id='button'),
+    html.Div(id='output-container-button',
+             children='Enter a value and press submit'),
+
+    # html.Div(id='page-1-content'),
+    # html.Br(),
     dcc.Link('Go to Page 2', href='/page-2'),
     html.Br(),
     dcc.Link('Go back to home', href='/'),
 ])
 
 
-@app.callback(dash.dependencies.Output('page-1-content','children'),
-              [dash.dependencies.Input('page-1-dropdown', 'value')])
-def page_1_dropdown(value):
-    return 'You have selected "{}"'.format(value)
+@app.callback(
+    dash.dependencies.Output('output-container-button', 'children'),
+    [dash.dependencies.Input('button', 'n_clicks')],
+    [dash.dependencies.State('input-box', 'value')])
+def update_output(n_clicks, value):
+    return 'The input value was "{}" and the button has been clicked {} times'.format(
+        value,
+        n_clicks
+    )
+
+
+# @app.callback(dash.dependencies.Output('page-1-content','children'),
+#               [dash.dependencies.Input('page-1-dropdown', 'value')])
+# def page_1_dropdown(value):
+#     return 'You have selected "{}"'.format(value)
 
 
 # Monthly frequency of revisions
