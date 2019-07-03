@@ -79,7 +79,13 @@ page_1_layout = html.Div([
 def update_output(n_clicks, value):
     if value is not None:
         sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE page_title = " + "'" + value + "';"
+        sql_link = "SELECT  links FROM pages WHERE page_title = " + "'" + value + "';"
+
         df_page_search = pd.read_sql_query(sql, con)
+        df_page_links = pd.read_sql_query(sql_link, con)
+
+        print(df_page_links)
+
         if df_page_search.shape[0] == 0:
             return 'Article named "{}" not found.'.format(value)
         else:
@@ -198,7 +204,7 @@ def display_graphs(start_date, end_date):
             'layout': {
                 'yaxis': {'title': "Number of articles"},
                 'xaxis': {'title': "Time"},
-                'title': "Number of articles that are last updated within your selected time frame"
+                'title': "Number of articles that are last updated per day"
             }
         }
     )
