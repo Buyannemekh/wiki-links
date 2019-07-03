@@ -80,6 +80,7 @@ def update_output(n_clicks, value):
         sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE page_title = " + "'" + value + "';"
         print(sql)
         df_page_search = pd.read_sql_query(sql, con)
+        print("result number of rows ", df_page_search.shape[0])
         return dash_table.DataTable(data=df_page_search.to_dict('records'),
                                 columns=[{"name": i, "id": i} for i in df_page_search.columns])
     else:
