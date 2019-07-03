@@ -84,14 +84,15 @@ def update_output(n_clicks, value):
         df_page_search = pd.read_sql_query(sql, con)
         df_page_links = pd.read_sql_query(sql_link, con)
 
-        print(df_page_links)
+        links = df_page_links['links'];
 
         if df_page_search.shape[0] == 0:
             return 'Article named "{}" not found.'.format(value)
         else:
             dt_page = dash_table.DataTable(data=df_page_search.to_dict('records'),
                                            columns=[{"name": i, "id": i} for i in df_page_search.columns])
-            return dt_page
+
+            return dt_page, links
     else:
         return 'Please enter Wikipedia article name.'
 
