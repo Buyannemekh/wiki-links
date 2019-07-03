@@ -60,11 +60,6 @@ index_page = html.Div([
 
 page_1_layout = html.Div([
     html.H1('Page 1'),
-    dcc.Dropdown(
-        id='page-1-dropdown',
-        options=[{'label': i, 'value': i} for i in ['LA', 'NYC', 'MTL']],
-        value='LA'
-    ),
     html.Div(dcc.Input(id='input-box', type='text')),
     html.Button('Submit', id='button'),
     html.Div(id='output-container-button',
