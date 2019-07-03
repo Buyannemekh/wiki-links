@@ -83,8 +83,11 @@ def update_output(n_clicks, value):
         if df_page_search.shape[0] == 0:
             return 'Article named "{}" not found.'.format(value)
         else:
-            return dash_table.DataTable(data=df_page_search.to_dict('records'),
-                                        columns=[{"name": i, "id": i} for i in df_page_search.columns])
+            id_page = df_page_search['page_id']
+            dt_page = dash_table.DataTable(data=df_page_search.to_dict('records'),
+                                           columns=[{"name": i, "id": i} for i in df_page_search.columns])
+
+            return id_page, dt_page
     else:
         return 'Please enter Wikipedia article name.'
 
