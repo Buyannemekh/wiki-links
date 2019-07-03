@@ -67,6 +67,7 @@ page_1_layout = html.Div([
 
     dcc.Link('Go to Page 2', href='/page-2'),
     html.Br(),
+
     dcc.Link('Go back to home', href='/'),
 ])
 
