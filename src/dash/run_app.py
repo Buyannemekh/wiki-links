@@ -128,15 +128,19 @@ datepick = html.Div([dcc.DatePickerRange(
                     ],
                     style={'width': '100%', 'display': 'inline-block'})
 
-graphs = html.Div(id='graphSelection', style={'width': '100%', 'display': 'inline-block'})
+graphs = html.Div(id='graphSelection',
+                  style={'width': '50%', 'display': 'inline-block'},
+                  className='selectedTimeframe')
+
 
 tables = html.Div(id='toptable',
-                  style={'width': '50%', 'display': 'inline-block'})
+                  style={'width': '50%', 'display': 'inline-block'},
+                  className='selectedTimeframe')
 
 page_2_layout = html.Div([
     current_count,
 
-    html.H5("Pick the date you are interested in:"),
+    html.H5("Pick the time frame that you are interested in:"),
     datepick, tables, graphs,
 
     dcc.Link('Go to Page 1', href='/page-1'),
