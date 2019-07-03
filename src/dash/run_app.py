@@ -160,7 +160,7 @@ def get_page_table(start_date, end_date):
         end_date_string = end_date.strftime("'%Y-%m-%d'")
 
         sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE time_stamp BETWEEN " + \
-              start_date_string + " AND " + end_date_string + " ORDER BY time_stamp LIMIT 10;"
+              start_date_string + " AND " + end_date_string + " ORDER BY time_stamp ASC, link_cnt DESC  LIMIT 100;"
         df_page = pd.read_sql_query(sql, con)
         # print(df_page)
         # df_page['page_title'] = df_page.apply(lambda row: '<a href="https://en.wikipedia.org/?curid={0}">{1}</a>'
