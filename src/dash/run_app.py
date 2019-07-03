@@ -81,7 +81,7 @@ def update_output(n_clicks, value):
         print(sql)
         df_page_search = pd.read_sql_query(sql, con)
         if df_page_search.shape[0] == 0:
-            return 'Article named "{}" not found.'
+            return 'Article named "{}" not found.'.format(value)
         else:
             return dash_table.DataTable(data=df_page_search.to_dict('records'),
                                         columns=[{"name": i, "id": i} for i in df_page_search.columns])
