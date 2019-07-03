@@ -125,7 +125,7 @@ current_count = html.Div([dcc.Graph(
 
 datepick = html.Div([dcc.DatePickerRange(
                             id='my-date-picker-range',
-                            min_date_allowed=dt(2010, 7, 1),
+                            min_date_allowed=dt(2008, 1, 1),
                             max_date_allowed=dt.today(),
                             initial_visible_month=dt(2010, 1, 1),
                             start_date=dt(2008, 1, 1),
