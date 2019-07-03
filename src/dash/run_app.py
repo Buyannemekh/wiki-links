@@ -2,7 +2,6 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from datetime import datetime as dt
-import dash_table
 import psycopg2
 import pandas as pd
 import dash_table
@@ -29,11 +28,6 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-# Since we're adding callbacks to elements that don't exist in the app.layout,
-# Dash will raise an exception to warn us that we might be
-# doing something wrong.
-# In this case, we're adding the elements through a callback, so we can ignore
-# the exception.
 app.config.suppress_callback_exceptions = True
 
 app.layout = html.Div([
@@ -84,7 +78,7 @@ def update_output(n_clicks, value):
         df_page_search = pd.read_sql_query(sql, con)
         df_page_links = pd.read_sql_query(sql_link, con)
 
-        links = df_page_links['links'][0];
+        links = df_page_links['links'][0][:100];
         str_links = ', '.join(links)
 
         if df_page_search.shape[0] == 0:
@@ -105,9 +99,6 @@ sql_query_all_time = "SELECT DATE_TRUNC('month', time_stamp) AS month, + COUNT(*
 
 # Query results
 query_results_0 = pd.read_sql_query(sql_query_all_time, con)
-# links = []
-# for i in range(0, query_results_0.shape[0]):
-#     links.append(dict(time=query_results_0.iloc[i]['month'], frequency=query_results_0.iloc[i]['frequency']))
 
 current_count = html.Div([dcc.Graph(
         id='example-graph',
