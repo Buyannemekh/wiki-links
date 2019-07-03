@@ -83,21 +83,11 @@ def update_output(n_clicks, value):
         if df_page_search.shape[0] == 0:
             return 'Article named "{}" not found.'.format(value)
         else:
-            id_page = df_page_search['page_id'][0]
             dt_page = dash_table.DataTable(data=df_page_search.to_dict('records'),
                                            columns=[{"name": i, "id": i} for i in df_page_search.columns])
-            link_page = dcc.Link('Click here to redirect to Wiki page of {}'.format(value),
-                                 href='https://en.wikipedia.org/?curid={}'.format(id_page)),
-
-            return link_page, dt_page
+            return dt_page
     else:
         return 'Please enter Wikipedia article name.'
-
-
-# @app.callback(dash.dependencies.Output('page-1-content','children'),
-#               [dash.dependencies.Input('page-1-dropdown', 'value')])
-# def page_1_dropdown(value):
-#     return 'You have selected "{}"'.format(value)
 
 
 # Monthly frequency of revisions
@@ -206,7 +196,7 @@ def display_graphs(start_date, end_date):
             'layout': {
                 'yaxis': {'title': "Number of articles"},
                 'xaxis': {'title': "Time"},
-                'title': "Freq"
+                'title': "Number of last updated per day within your selected time frame"
             }
         }
     )
