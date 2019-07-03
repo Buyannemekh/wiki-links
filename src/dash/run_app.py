@@ -1,8 +1,29 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+from datetime import datetime as dt
+import dash_table
+import psycopg2
+import pandas as pd
+import dash_table
+from dash.dependencies import Input, Output
+import os
+import sys
 
 print(dcc.__version__) # 0.6.0 or above is required
+
+os.environ["POSTGRES_HOSTNAME"] = sys.argv[1]
+os.environ["POSTGRES_USER"] = sys.argv[2]
+os.environ["POSTGRES_PASSWORD"] = sys.argv[3]
+os.environ["POSTGRES_DBNAME"] = sys.argv[4]
+
+user = os.environ["POSTGRES_USER"]
+host = os.environ["POSTGRES_HOSTNAME"]
+password = os.environ["POSTGRES_PASSWORD"]
+dbname = os.environ["POSTGRES_DBNAME"]
+
+# Settings for psycopg Postgres connector
+con = psycopg2.connect(database=dbname, user=user, password=password, host=host)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -22,9 +43,9 @@ app.layout = html.Div([
 
 
 index_page = html.Div([
-    dcc.Link('Go to Page 1', href='/page-1'),
+    dcc.Link('Search by article', href='/page-1'),
     html.Br(),
-    dcc.Link('Go to Page 2', href='/page-2'),
+    dcc.Link('Search by date', href='/page-2'),
 ])
 
 page_1_layout = html.Div([
@@ -41,30 +62,93 @@ page_1_layout = html.Div([
     dcc.Link('Go back to home', href='/'),
 ])
 
-@app.callback(dash.dependencies.Output('page-1-content', 'children'),
+
+@app.callback(dash.dependencies.Output('page-1-content','children'),
               [dash.dependencies.Input('page-1-dropdown', 'value')])
 def page_1_dropdown(value):
     return 'You have selected "{}"'.format(value)
 
 
+# Monthly frequency of revisions
+sql_query_0 = "SELECT DATE_TRUNC('month', time_stamp) AS month, + COUNT(*) AS frequency " + \
+              "FROM pages GROUP BY month ORDER BY month;"
+
+
+# Query results
+query_results_0 = pd.read_sql_query(sql_query_0, con)
+links = []
+for i in range(0, query_results_0.shape[0]):
+    links.append(dict(time=query_results_0.iloc[i]['month'], frequency=query_results_0.iloc[i]['frequency']))
+
+current_count = html.Div([dcc.Graph(
+        id='example-graph',
+        figure={
+            'data': [{'x': query_results_0['month'],
+                      'y': query_results_0['frequency'],
+                      'type': 'line', 'name': 'updated'}],
+            'layout': {
+                'title': 'How up to date is Wikipedia?',
+                'titlefont': {'size': 35},
+            }
+        }
+    )])
+
+datepick = html.Div([dcc.DatePickerRange(
+                            id='my-date-picker-range',
+                            min_date_allowed=dt(2010, 7, 1),
+                            max_date_allowed=dt.today(),
+                            initial_visible_month=dt(2019, 6, 1),
+                            start_date=dt(2018, 1, 1),
+                            end_date=dt(2019, 6, 1)),
+                    ],
+                    style={'width': '100%', 'display': 'inline-block'})
+
+
+tables = html.Div(id='toptable',
+                  style={'width': '50%', 'display': 'inline-block'})
+
 page_2_layout = html.Div([
-    html.H1('Page 2'),
-    dcc.RadioItems(
-        id='page-2-radios',
-        options=[{'label': i, 'value': i} for i in ['Orange', 'Blue', 'Red']],
-        value='Orange'
-    ),
-    html.Div(id='page-2-content'),
-    html.Br(),
+    html.H1(children='Wiki Links',
+            style={'textAlign': 'center',
+                   'margin-top': '80px',
+                   'margin-bottom': '80px'
+                   }),
+    current_count,
+
+    html.H5("Pick the date you are interested in:"),
+    datepick, tables,
+
     dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
     dcc.Link('Go back to home', href='/')
 ])
 
-@app.callback(dash.dependencies.Output('page-2-content', 'children'),
-              [dash.dependencies.Input('page-2-radios', 'value')])
-def page_2_radios(value):
-    return 'You have selected "{}"'.format(value)
+
+@app.callback(
+    Output('toptable', 'children'),
+    [Input('my-date-picker-range', 'start_date'), Input('my-date-picker-range', 'end_date')]
+)
+
+
+# Get table of pages information within timeframe
+def get_page_table(start_date, end_date):
+    df_page = None
+    if start_date is not None and end_date is not None:
+        start_date = dt.strptime(start_date, '%Y-%m-%d')
+        start_date_string = start_date.strftime("'%Y-%m-%d'")
+        end_date = dt.strptime(end_date, '%Y-%m-%d')
+        end_date_string = end_date.strftime("'%Y-%m-%d'")
+
+        sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE time_stamp BETWEEN " + \
+              start_date_string + " AND " + end_date_string + " ORDER BY time_stamp LIMIT 10;"
+        df_page = pd.read_sql_query(sql, con)
+        # print(df_page)
+        # df_page['page_title'] = df_page.apply(lambda row: '<a href="https://en.wikipedia.org/?curid={0}">{1}</a>'
+        #                                       .format(row['page_id'], row['page_title']), axis=1)
+    else:
+        print('date not selected!')
+    return dash_table.DataTable(data=df_page.to_dict('records'),
+                                columns=[{"name": i, "id": i} for i in df_page.columns])
 
 
 # Update the index
