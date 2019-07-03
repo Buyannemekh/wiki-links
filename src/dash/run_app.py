@@ -95,15 +95,15 @@ def update_output(n_clicks, value):
 
 
 # Monthly frequency of revisions
-sql_query_0 = "SELECT DATE_TRUNC('month', time_stamp) AS month, + COUNT(*) AS frequency " + \
+sql_query_all_time = "SELECT DATE_TRUNC('month', time_stamp) AS month, + COUNT(*) AS frequency " + \
               "FROM pages GROUP BY month ORDER BY month;"
 
 
 # Query results
-query_results_0 = pd.read_sql_query(sql_query_0, con)
-links = []
-for i in range(0, query_results_0.shape[0]):
-    links.append(dict(time=query_results_0.iloc[i]['month'], frequency=query_results_0.iloc[i]['frequency']))
+query_results_0 = pd.read_sql_query(sql_query_all_time, con)
+# links = []
+# for i in range(0, query_results_0.shape[0]):
+#     links.append(dict(time=query_results_0.iloc[i]['month'], frequency=query_results_0.iloc[i]['frequency']))
 
 current_count = html.Div([dcc.Graph(
         id='example-graph',
@@ -128,6 +128,7 @@ datepick = html.Div([dcc.DatePickerRange(
                     ],
                     style={'width': '100%', 'display': 'inline-block'})
 
+graphs = html.Div(id='graphSelection', style={'width': '100%', 'display': 'inline-block'})
 
 tables = html.Div(id='toptable',
                   style={'width': '50%', 'display': 'inline-block'})
@@ -136,7 +137,7 @@ page_2_layout = html.Div([
     current_count,
 
     html.H5("Pick the date you are interested in:"),
-    datepick, tables,
+    datepick, tables, graphs,
 
     dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
@@ -148,8 +149,6 @@ page_2_layout = html.Div([
     Output('toptable', 'children'),
     [Input('my-date-picker-range', 'start_date'), Input('my-date-picker-range', 'end_date')]
 )
-
-
 # Get table of pages information within timeframe
 def get_page_table(start_date, end_date):
     df_page = None
@@ -169,6 +168,38 @@ def get_page_table(start_date, end_date):
         print('date not selected!')
     return dash_table.DataTable(data=df_page.to_dict('records'),
                                 columns=[{"name": i, "id": i} for i in df_page.columns])
+
+
+@app.callback(
+    Output('graphSelection', 'children'),
+    [Input('my-date-picker-range', 'start_date'), Input('my-date-picker-range', 'end_date')]
+)
+def display_graphs(start_date, end_date):
+    df_frequency_by_day = None
+    if start_date is not None and end_date is not None:
+        start_date = dt.strptime(start_date, '%Y-%m-%d')
+        start_date_string = start_date.strftime("'%Y-%m-%d'")
+        end_date = dt.strptime(end_date, '%Y-%m-%d')
+        end_date_string = end_date.strftime("'%Y-%m-%d'")
+
+        sql = "SELECT DATE_TRUNC('day', time_stamp) AS day, COUNT(*) AS frequency " + \
+              "FROM pages WHERE time_stamp BETWEEN" + start_date_string +" AND " + end_date_string + \
+              " GROUP BY day ORDER BY day LIMIT 20;"
+        df_frequency_by_day = pd.read_sql_query(sql, con)
+
+    return dcc.Graph(
+        figure={
+            'data': [{'x': df_frequency_by_day["day"],
+                      'y': df_frequency_by_day["frequency"],
+                      'type': 'bar-line'
+                      }],
+            'layout': {
+                'yaxis': {'title': "Number of articles"},
+                'xaxis': {'title': "Time"},
+                'title': "Freq"
+            }
+        }
+    )
 
 
 # Update the index
