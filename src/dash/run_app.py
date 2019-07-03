@@ -43,7 +43,7 @@ app.layout = html.Div([
 
 
 index_page = html.Div([
-    html.H1(children='English Wikipedia articles in need of updating',
+    html.H1(children='Wiki Pages',
             style={'textAlign': 'center',
                    'margin-top': '80px',
                    'margin-bottom': '80px'
@@ -117,11 +117,6 @@ tables = html.Div(id='toptable',
                   style={'width': '50%', 'display': 'inline-block'})
 
 page_2_layout = html.Div([
-    html.H1(children='Wiki Links',
-            style={'textAlign': 'center',
-                   'margin-top': '80px',
-                   'margin-bottom': '80px'
-                   }),
     current_count,
 
     html.H5("Pick the date you are interested in:"),
