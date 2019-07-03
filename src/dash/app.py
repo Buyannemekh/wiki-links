@@ -12,10 +12,10 @@ import sys
 
 
 # Custom CSS styles are stored in assets/heroic-assets.css
-# app = dash.Dash(__name__, static_folder='assets')
-# app.scripts.config.serve_locally=True
-# app.css.config.serve_locally=True
-# app.config.suppress_callback_exceptions = True
+app = dash.Dash(__name__, static_folder='assets')
+app.scripts.config.serve_locally=True
+app.css.config.serve_locally=True
+app.config.suppress_callback_exceptions = True
 
 ## OS
 os.environ["POSTGRES_HOSTNAME"] = sys.argv[1]
