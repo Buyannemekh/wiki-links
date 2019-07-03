@@ -50,8 +50,8 @@ index_page = html.Div([
                    }),
     dcc.Link('Search by article', href='/page-1',
              style={'textAlign': 'center',
-                   'margin-top': '80px',
-                   'margin-bottom': '80px'
+                    'margin-top': '80px',
+                    'margin-bottom': '80px'
                    }),
     html.Br(),
     dcc.Link('Search by date', href='/page-2'),
@@ -65,8 +65,6 @@ page_1_layout = html.Div([
     html.Div(id='output-container-button',
              children='Enter a value and press submit'),
 
-    # html.Div(id='page-1-content'),
-    # html.Br(),
     dcc.Link('Go to Page 2', href='/page-2'),
     html.Br(),
     dcc.Link('Go back to home', href='/'),
@@ -78,6 +76,8 @@ page_1_layout = html.Div([
     [dash.dependencies.Input('button', 'n_clicks')],
     [dash.dependencies.State('input-box', 'value')])
 def update_output(n_clicks, value):
+    sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE page_title = " + value + ";"
+    print(sql)
     return 'The input value was "{}" and the button has been clicked {} times'.format(
         value,
         n_clicks
