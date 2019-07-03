@@ -108,6 +108,8 @@ current_count = html.Div([dcc.Graph(
                       'y': query_results_0['frequency'],
                       'type': 'line', 'name': 'updated'}],
             'layout': {
+                'yaxis': {'title': "Number of articles"},
+                'xaxis': {'title': "Time"},
                 'title': 'How up to date is Wikipedia?',
                 'titlefont': {'size': 35},
             }
@@ -196,7 +198,7 @@ def display_graphs(start_date, end_date):
             'layout': {
                 'yaxis': {'title': "Number of articles"},
                 'xaxis': {'title': "Time"},
-                'title': "Number of last updated per day within your selected time frame"
+                'title': "Number of articles that are last updated within your selected time frame"
             }
         }
     )
