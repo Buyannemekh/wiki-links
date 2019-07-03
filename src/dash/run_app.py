@@ -78,7 +78,6 @@ page_1_layout = html.Div([
 def update_output(n_clicks, value):
     if value is not None:
         sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE page_title = " + "'" + value + "';"
-        print(sql)
         df_page_search = pd.read_sql_query(sql, con)
         if df_page_search.shape[0] == 0:
             return 'Article named "{}" not found.'.format(value)
@@ -86,11 +85,7 @@ def update_output(n_clicks, value):
             return dash_table.DataTable(data=df_page_search.to_dict('records'),
                                         columns=[{"name": i, "id": i} for i in df_page_search.columns])
     else:
-        print("Please enter Wikipedia article title")
-        return 'The input value was "{}" and the button has been clicked {} times'.format(
-            value,
-            n_clicks
-        )
+        return 'Please enter Wikipedia article name.'
 
 
 # @app.callback(dash.dependencies.Output('page-1-content','children'),
