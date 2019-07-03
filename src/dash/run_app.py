@@ -43,6 +43,11 @@ app.layout = html.Div([
 
 
 index_page = html.Div([
+    html.H1(children='Wiki Links',
+            style={'textAlign': 'center',
+                   'margin-top': '80px',
+                   'margin-bottom': '80px'
+                   }),
     dcc.Link('Search by article', href='/page-1'),
     html.Br(),
     dcc.Link('Search by date', href='/page-2'),
