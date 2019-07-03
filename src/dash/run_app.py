@@ -127,9 +127,9 @@ datepick = html.Div([dcc.DatePickerRange(
                             id='my-date-picker-range',
                             min_date_allowed=dt(2010, 7, 1),
                             max_date_allowed=dt.today(),
-                            initial_visible_month=dt(2019, 6, 1),
-                            start_date=dt(2018, 1, 1),
-                            end_date=dt(2019, 6, 1)),
+                            initial_visible_month=dt(2010, 1, 1),
+                            start_date=dt(2008, 1, 1),
+                            end_date=dt(2019, 7, 1)),
                     ],
                     style={'width': '100%', 'display': 'inline-block'})
 
