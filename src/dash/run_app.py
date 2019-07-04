@@ -57,10 +57,17 @@ index_page = html.Div([
 
 page_1_layout = html.Div([
     html.H1('Page 1'),
+    html.Br(),
+
     html.Div(dcc.Input(id='input-box', type='text')),
+    html.Br(),
+
     html.Button('Submit', id='button'),
+    html.Br(),
+
     html.Div(id='output-container-button',
              children='Enter a value and press submit'),
+    html.Br(),
 
     dcc.Link('Go to Page 2', href='/page-2'),
     html.Br(),
