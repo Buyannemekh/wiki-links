@@ -214,9 +214,15 @@ df_random_page_title = df_random_page['page_title'][0]
 page_3_layout = html.Div([
 
     html.H5("Random page"),
-    html.H6("Random page {}".format(df_random_page_title)),
+    html.Br(),
 
-    html.A("{}".format(df_random_page_title), href="https://www.google.com/", target="_blank"),
+    html.H6("You got '{}'!".format(df_random_page_title)),
+    html.Br(),
+
+    html.A("Click here to see '{}'".format(df_random_page_title),
+           href="https://en.wikipedia.org/?curid={}".format(df_random_page_id),
+           target="_blank"),
+    html.Br(),
 
     dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
