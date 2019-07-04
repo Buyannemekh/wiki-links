@@ -41,16 +41,17 @@ index_page = html.Div([
                    'margin-top': '80px',
                    'margin-bottom': '80px'
                    }),
-    dcc.Link('Search by article', href='/page-1',
+
+    dcc.Link(html.Button('Search by article'), href='/page-1',
              style={'textAlign': 'center',
                     'margin-top': '80px',
                     'margin-bottom': '80px'
                    }),
     html.Br(),
-    dcc.Link(html.Button('Search by date'), href='/page-2'),
+    dcc.Link(html.Button('Search by date'), href='/page-2', style={'textAlign': 'center'}),
 
     html.Br(),
-    dcc.Link("I'm feeling lucky", href='/page-3'),
+    dcc.Link(html.Button("I'm feeling lucky"), href='/page-3', style={'textAlign': 'center'}),
 
     # dcc.Link(html.Button('back'), href='jj')
 
@@ -222,9 +223,6 @@ df_random_page_id = df_random_page['page_id'][0]
 df_random_page_title = df_random_page['page_title'][0]
 
 page_3_layout = html.Div([
-
-    html.H5("I'm feeling lucky"),
-    html.Br(),
 
     html.H6("Hey, you got '{}'!".format(df_random_page_title)),
     html.Br(),
