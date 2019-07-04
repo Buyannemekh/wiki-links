@@ -48,6 +48,10 @@ index_page = html.Div([
                    }),
     html.Br(),
     dcc.Link('Search by date', href='/page-2'),
+
+    html.Br(),
+    dcc.Link("I'm feeling lucky", href='/page-3'),
+
 ])
 
 
@@ -82,7 +86,7 @@ def update_output(n_clicks, value):
 
             links = df_page_links['links'][0][:100];
             str_links = ', '.join(links)
-            
+
             dt_page = dash_table.DataTable(data=df_page_search.to_dict('records'),
                                            columns=[{"name": i, "id": i} for i in df_page_search.columns])
 
@@ -202,6 +206,16 @@ def display_graphs(start_date, end_date):
     )
 
 
+page_3_layout = html.Div([
+
+    html.H5("Random page"),
+
+    dcc.Link('Go to Page 1', href='/page-1'),
+    html.Br(),
+    dcc.Link('Go back to home', href='/')
+])
+
+
 # Update the index
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
@@ -210,6 +224,8 @@ def display_page(pathname):
         return page_1_layout
     elif pathname == '/page-2':
         return page_2_layout
+    elif pathname == '/page-3':
+        return page_3_layout
     else:
         return index_page
     # You could also return a 404 "URL not found" page here
