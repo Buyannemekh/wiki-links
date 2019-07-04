@@ -206,16 +206,15 @@ def display_graphs(start_date, end_date):
     )
 
 
-sql_random_page = "SELECT page_id FROM pages ORDER BY RANDOM() LIMIT 1"
+sql_random_page = "SELECT page_id, page_title FROM pages ORDER BY RANDOM() LIMIT 1"
 df_random_page = pd.read_sql_query(sql_random_page, con)
 df_random_page_id = df_random_page['page_id'][0]
-print(df_random_page_id)
+df_random_page_title = df_random_page['page_title'][0]
 
 page_3_layout = html.Div([
 
     html.H5("Random page"),
-
-    html.H1("Random page id {}".format(df_random_page_id)),
+    html.H5("Random page title {}".format(df_random_page_title)),
 
     dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
