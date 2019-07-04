@@ -47,10 +47,13 @@ index_page = html.Div([
                     'margin-bottom': '80px'
                    }),
     html.Br(),
-    dcc.Link('Search by date', href='/page-2'),
+    dcc.Link(html.Button('Search by date'), href='/page-2'),
 
     html.Br(),
     dcc.Link("I'm feeling lucky", href='/page-3'),
+
+    # dcc.Link(html.Button('back'), href='jj')
+
 
 ])
 
@@ -220,19 +223,20 @@ df_random_page_title = df_random_page['page_title'][0]
 
 page_3_layout = html.Div([
 
-    html.H5("Random page"),
+    html.H5("I'm feeling lucky"),
     html.Br(),
 
-    html.H6("You got '{}'!".format(df_random_page_title)),
+    html.H6("Hey, you got '{}'!".format(df_random_page_title)),
     html.Br(),
 
-    html.A("Click here to see '{}'".format(df_random_page_title),
+    html.A("Click here to read about '{}'".format(df_random_page_title),
            href="https://en.wikipedia.org/?curid={}".format(df_random_page_id),
            target="_blank"),
     html.Br(),
 
     dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
+
     dcc.Link('Go back to home', href='/')
 ])
 
