@@ -214,7 +214,9 @@ df_random_page_title = df_random_page['page_title'][0]
 page_3_layout = html.Div([
 
     html.H5("Random page"),
-    html.H5("Random page title {}".format(df_random_page_title)),
+    html.H6("Random page {}".format(df_random_page_title)),
+
+    html.A("{}".format(df_random_page_title), href="https://www.google.com/", target="_blank"),
 
     dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
