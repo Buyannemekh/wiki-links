@@ -31,9 +31,10 @@ tx_df = spark.read\
     .option("dbtable", "links") \
     .option("numPartitions", '10000') \
     .load()
-# display_df(tx_df)
+
 
 #jdbcDF2 = spark.read.jdbc(url=url, table="links", properties=properties)
-tx_df.show()
+# tx_df.show()
+print(tx_df.printSchema())
 print(tx_df.count(), len(tx_df.columns))
 print("Postgres to Spark done")
