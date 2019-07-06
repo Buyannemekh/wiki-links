@@ -41,14 +41,14 @@ print(tx_df.printSchema())
 # print("Postgres to Spark done")
 
 
-df_link_count = tx_df.groupBy('link').agg(count('*').alias('linked_count'))
+df_link_count = tx_df.groupBy('link').agg(count('*').alias('count'))
 df_link_count.show(20)
 print(df_link_count.printSchema())
 print(df_link_count.count())
 print("POSTGRES TO SPARK DONE")
 
 
-df_link_count.select('link', 'linked_count').\
+df_link_count.select('link', 'count').\
         write.jdbc(url=url,
                    table='pages_linked_count',
                    properties=properties,
