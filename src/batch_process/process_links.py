@@ -1,4 +1,5 @@
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import count
 import sys
 import os
 
@@ -34,7 +35,14 @@ tx_df = spark.read\
 
 
 #jdbcDF2 = spark.read.jdbc(url=url, table="links", properties=properties)
-# tx_df.show()
+tx_df.show(20)
 print(tx_df.printSchema())
 print(tx_df.count(), len(tx_df.columns))
+# print("Postgres to Spark done")
+
+
+df_link_count = tx_df.groupBy('link').agg(count('*').alias('link_count'))
+df_link_count.show(20)
+print(df_link_count.printSchema())
+print(df_link_count.count(), len(df_link_count.columns))
 print("Postgres to Spark done")
