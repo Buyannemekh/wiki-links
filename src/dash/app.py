@@ -171,13 +171,10 @@ page_3_layout = html.Div([
     #        target="_blank"),
     # html.Br(),
 
-    html.H1('Page 1'),
+    html.H1('Page 3'),
     html.Br(),
 
-    html.Div(dcc.Input(id='input-box', type='text')),
-    html.Br(),
-
-    html.Button('Submit', id='button'),
+    html.Button('Continue', id='button'),
     html.Br(),
 
     html.Div(id='output-random-button',
@@ -193,7 +190,7 @@ page_3_layout = html.Div([
 
 @app.callback(
     dash.dependencies.Output('output-random-button', 'children'),
-    [dash.dependencies.Input('lucky-button', 'n_clicks')])
+    [dash.dependencies.Input('button', 'n_clicks')])
 def update_output(n_clicks):
     return 'The input value was and the button has been clicked {} times'.format(
         n_clicks
