@@ -6,15 +6,15 @@ import os, sys
 import psycopg2
 import pandas as pd
 
-# os.environ["POSTGRES_HOSTNAME"] = sys.argv[1]
-# os.environ["POSTGRES_USER"] = sys.argv[2]
-# os.environ["POSTGRES_PASSWORD"] = sys.argv[3]
-# os.environ["POSTGRES_DBNAME"] = sys.argv[4]
-#
-# user = os.environ["POSTGRES_USER"]
-# host = os.environ["POSTGRES_HOSTNAME"]
-# password = os.environ["POSTGRES_PASSWORD"]
-# dbname = os.environ["POSTGRES_DBNAME"]
+os.environ["POSTGRES_HOSTNAME"] = sys.argv[1]
+os.environ["POSTGRES_USER"] = sys.argv[2]
+os.environ["POSTGRES_PASSWORD"] = sys.argv[3]
+os.environ["POSTGRES_DBNAME"] = sys.argv[4]
+
+user = os.environ["POSTGRES_USER"]
+host = os.environ["POSTGRES_HOSTNAME"]
+password = os.environ["POSTGRES_PASSWORD"]
+dbname = os.environ["POSTGRES_DBNAME"]
 
 # Settings for psycopg Postgres connector
 con = psycopg2.connect(database=dbname, user=user, password=password, host=host)
@@ -192,13 +192,13 @@ page_3_layout = html.Div([
     dash.dependencies.Output('output-random-button', 'children'),
     [dash.dependencies.Input('button', 'n_clicks')])
 def update_output(n_clicks):
-    # sql_random_page = "SELECT page_id, page_title FROM pages ORDER BY RANDOM() LIMIT 1"
-    # df_random_page = pd.read_sql_query(sql_random_page, con)
-    # df_random_page_id = df_random_page['page_id'][0]
-    # df_random_page_title = df_random_page['page_title'][0]
-    #
-    return dcc.Link('Go back to home', href='/'),
+    sql_random_page = "SELECT page_id, page_title FROM pages ORDER BY RANDOM() LIMIT 1"
+    df_random_page = pd.read_sql_query(sql_random_page, con)
+    df_random_page_id = df_random_page['page_id'][0]
+    df_random_page_title = df_random_page['page_title'][0]
 
+    return dcc.Link('You got "{}"'.format(df_random_page_title),
+                    href="https://en.wikipedia.org/?curid={}".format(df_random_page_id)),
 
 
 # Update the index
