@@ -112,7 +112,7 @@ index_page = html.Div([
              href='/page-2'),
 
     html.Br(),
-    dcc.Link(html.Button("I'm feeling lucky", id='submit', style=style_button),
+    dcc.Link(html.Button("I'm feeling lucky", id='lucky-button', style=style_button),
              href='/page-3'),
 
 ])
@@ -170,6 +170,13 @@ page_3_layout = html.Div([
     #        href="https://en.wikipedia.org/?curid={}".format(df_random_page_id),
     #        target="_blank"),
     # html.Br(),
+
+    html.Div(dcc.Input(id='input-box', type='text')),
+    html.Br(),
+
+    html.Button('Submit', id='button'),
+    html.Br(),
+
     html.Div(id='output-random-button',
              children='Enter a value and press submit'),
     html.Br(),
@@ -183,9 +190,11 @@ page_3_layout = html.Div([
 
 @app.callback(
     dash.dependencies.Output('output-random-button', 'children'),
-    [dash.dependencies.Input('submit', 'n_clicks')])
-def update_output(n_clicks):
-    return 'The input value was and the button has been clicked {} times'.format(
+    [dash.dependencies.Input('button', 'n_clicks')],
+    [dash.dependencies.State('input-box', 'value')])
+def update_output(n_clicks, value):
+    return 'The input value was "{}" and the button has been clicked {} times'.format(
+        value,
         n_clicks
     )
 
