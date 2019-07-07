@@ -183,7 +183,7 @@ page_3_layout = html.Div([
 
 @app.callback(
     dash.dependencies.Output('output-random-button', 'children'),
-    [dash.dependencies.State('submit', 'n_clicks')])
+    [dash.dependencies.Input('submit', 'n_clicks')])
 def update_output(n_clicks):
     return 'The input value was and the button has been clicked {} times'.format(
         n_clicks
