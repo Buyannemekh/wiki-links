@@ -161,24 +161,21 @@ page_2_layout = html.Div([
     dcc.Link('Go back to home', href='/')
 ])
 
+sql_random_page = "SELECT page_id, page_title FROM pages ORDER BY RANDOM() LIMIT 1"
+df_random_page = pd.read_sql_query(sql_random_page, con)
+df_random_page_id = df_random_page['page_id'][0]
+df_random_page_title = df_random_page['page_title'][0]
+
 page_3_layout = html.Div([
-
-    # html.H6("Hey, you got '{}'!".format(df_random_page_title)),
-    # html.Br(),
-    #
-    # html.A("Click here to read about '{}'".format(df_random_page_title),
-    #        href="https://en.wikipedia.org/?curid={}".format(df_random_page_id),
-    #        target="_blank"),
-    # html.Br(),
-
     html.H1('Page 3'),
     html.Br(),
 
-    html.Button('Continue', id='button'),
+    html.H6("You got '{}'!".format(df_random_page_title)),
     html.Br(),
 
-    html.Div(id='output-random-button',
-             children='Enter a value and press submit'),
+    html.A("Click here to read about '{}'".format(df_random_page_title),
+           href="https://en.wikipedia.org/?curid={}".format(df_random_page_id),
+           target="_blank"),
     html.Br(),
 
     dcc.Link('Go to Page 1', href='/page-1'),
@@ -186,19 +183,6 @@ page_3_layout = html.Div([
 
     dcc.Link('Go back to home', href='/')
 ])
-
-
-@app.callback(
-    dash.dependencies.Output('output-random-button', 'children'),
-    [dash.dependencies.Input('button', 'n_clicks')])
-def update_output(n_clicks):
-    sql_random_page = "SELECT page_id, page_title FROM pages ORDER BY RANDOM() LIMIT 1"
-    df_random_page = pd.read_sql_query(sql_random_page, con)
-    df_random_page_id = df_random_page['page_id'][0]
-    df_random_page_title = df_random_page['page_title'][0]
-
-    return dcc.Link('You got "{}"'.format(df_random_page_title),
-                    href="https://en.wikipedia.org/?curid={}".format(df_random_page_id)),
 
 
 # Update the index
