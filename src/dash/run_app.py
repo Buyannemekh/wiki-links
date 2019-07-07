@@ -93,6 +93,7 @@ page_1_layout = html.Div([
 
     html.Button('Submit', id='button'),
     html.Br(),
+    html.Br(),
 
     html.Div(id='output-container-button',
              children='Enter a value and press submit'),
