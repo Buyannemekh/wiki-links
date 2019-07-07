@@ -1,10 +1,11 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-
+import dash_table
 import os, sys
 import psycopg2
 import pandas as pd
+
 
 os.environ["POSTGRES_HOSTNAME"] = sys.argv[1]
 os.environ["POSTGRES_USER"] = sys.argv[2]
@@ -144,10 +145,25 @@ page_1_layout = html.Div([
     [dash.dependencies.Input('button', 'n_clicks')],
     [dash.dependencies.State('input-box', 'value')])
 def update_output(n_clicks, value):
-    return 'The input value was "{}" and the button has been clicked {} times'.format(
-        value,
-        n_clicks
-    )
+    if value is not None:
+        sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE page_title = " + "'" + value + "';"
+        df_page_search = pd.read_sql_query(sql, con)
+
+        if df_page_search.shape[0] == 0:
+            return 'Article named "{}" not found.'.format(value)
+        else:
+            sql_link = "SELECT  links FROM pages WHERE page_title = " + "'" + value + "';"
+            df_page_links = pd.read_sql_query(sql_link, con)
+
+            links = df_page_links['links'][0][:100];
+            str_links = ', '.join(links)
+
+            dt_page = dash_table.DataTable(data=df_page_search.to_dict('records'),
+                                           columns=[{"name": i, "id": i} for i in df_page_search.columns])
+
+            return dt_page, str_links
+    else:
+        return 'Please enter Wikipedia article name.'
 
 
 page_2_layout = html.Div([
