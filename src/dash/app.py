@@ -2,6 +2,23 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 
+# import os, sys
+# import psycopg2
+#
+#
+# os.environ["POSTGRES_HOSTNAME"] = sys.argv[1]
+# os.environ["POSTGRES_USER"] = sys.argv[2]
+# os.environ["POSTGRES_PASSWORD"] = sys.argv[3]
+# os.environ["POSTGRES_DBNAME"] = sys.argv[4]
+#
+# user = os.environ["POSTGRES_USER"]
+# host = os.environ["POSTGRES_HOSTNAME"]
+# password = os.environ["POSTGRES_PASSWORD"]
+# dbname = os.environ["POSTGRES_DBNAME"]
+#
+# # Settings for psycopg Postgres connector
+# con = psycopg2.connect(database=dbname, user=user, password=password, host=host)
+
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -95,7 +112,7 @@ index_page = html.Div([
              href='/page-2'),
 
     html.Br(),
-    dcc.Link(html.Button("I'm feeling lucky", style=style_button),
+    dcc.Link(html.Button("I'm feeling lucky", id='submit', style=style_button),
              href='/page-3'),
 
 ])
@@ -153,12 +170,24 @@ page_3_layout = html.Div([
     #        href="https://en.wikipedia.org/?curid={}".format(df_random_page_id),
     #        target="_blank"),
     # html.Br(),
+    html.Div(id='output-random-button',
+             children='Enter a value and press submit'),
+    html.Br(),
 
     dcc.Link('Go to Page 1', href='/page-1'),
     html.Br(),
 
     dcc.Link('Go back to home', href='/')
 ])
+
+
+@app.callback(
+    dash.dependencies.Output('output-random-button', 'children'),
+    [dash.dependencies.State('submit', 'n_clicks')])
+def update_output(n_clicks):
+    return 'The input value was and the button has been clicked {} times'.format(
+        n_clicks
+    )
 
 
 # Update the index
