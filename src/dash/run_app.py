@@ -31,7 +31,32 @@ app.config.suppress_callback_exceptions = True
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content')
+    html.Div(id='page-content'),
+    html.Div([
+        dcc.Link('Home', style={'display': 'block',
+                                'float': 'left',
+                                'padding': '.5vh 2vh',
+                                'text-align': 'center',
+                                'font-size': '2vh',
+                                'color': 'white',
+                                'text-decoration': 'none'}, href='/'),
+        # html.A('About', href='https://github.com/Buyannemekh',
+        #        target='_blank',
+        #        className='header-button'),
+        # dcc.Link('Contact', className='header-button', href='/contact'),
+        # html.A('Resume', href='https://platform.insightdata.com/projects?keyword=2019B.DE.NY',
+        #        target='_blank', className='header-button'),
+        # dcc.Link('UpdatePages', className='header-button', href='/', style={'float': 'right', 'class': 'active'})
+    ], style={'height': '5vh',
+              'line-height': '4vh',
+              'background-color': '#007fff',
+              'border-bottom': 'thin lightgrey solid',
+              'list-style-type': 'none',
+              'margin': '0',
+              'padding': '0',
+              'overflow': 'hidden',
+              'font-family': '"Open Sans", times, sans-serif'}),
+    html.Div(id='page-content'),
 ])
 
 
