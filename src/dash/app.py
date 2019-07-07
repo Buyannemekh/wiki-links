@@ -2,10 +2,10 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 
-# import os, sys
-# import psycopg2
-#
-#
+import os, sys
+import psycopg2
+import pandas as pd
+
 # os.environ["POSTGRES_HOSTNAME"] = sys.argv[1]
 # os.environ["POSTGRES_USER"] = sys.argv[2]
 # os.environ["POSTGRES_PASSWORD"] = sys.argv[3]
@@ -15,9 +15,9 @@ import dash_html_components as html
 # host = os.environ["POSTGRES_HOSTNAME"]
 # password = os.environ["POSTGRES_PASSWORD"]
 # dbname = os.environ["POSTGRES_DBNAME"]
-#
-# # Settings for psycopg Postgres connector
-# con = psycopg2.connect(database=dbname, user=user, password=password, host=host)
+
+# Settings for psycopg Postgres connector
+con = psycopg2.connect(database=dbname, user=user, password=password, host=host)
 
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -192,9 +192,13 @@ page_3_layout = html.Div([
     dash.dependencies.Output('output-random-button', 'children'),
     [dash.dependencies.Input('button', 'n_clicks')])
 def update_output(n_clicks):
-    return 'The input value was and the button has been clicked {} times'.format(
-        n_clicks
-    )
+    # sql_random_page = "SELECT page_id, page_title FROM pages ORDER BY RANDOM() LIMIT 1"
+    # df_random_page = pd.read_sql_query(sql_random_page, con)
+    # df_random_page_id = df_random_page['page_id'][0]
+    # df_random_page_title = df_random_page['page_title'][0]
+    #
+    return dcc.Link('Go back to home', href='/'),
+
 
 
 # Update the index
