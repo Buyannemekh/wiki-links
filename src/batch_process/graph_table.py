@@ -43,20 +43,20 @@ tx_df_distinct = sorted_table.dropDuplicates(['page_id'])
 
 look_up_df = tx_df_distinct.select(col('page_id').alias('link_id'),
                            col('page_title'))
-look_up_df.show(20)
-print(look_up_df.printSchema())
-print(look_up_df.count(), len(look_up_df.columns))
+# look_up_df.show(20)
+# print(look_up_df.printSchema())
+# print(look_up_df.count(), len(look_up_df.columns))
 
 pages_links_df = tx_df_distinct.withColumn("link", explode(tx_df.links)).select(col('page_id'), col('link'))
-print(pages_links_df.printSchema())
-print(pages_links_df.count(), len(pages_links_df.columns))
-pages_links_df.show(20)
+# print(pages_links_df.printSchema())
+# print(pages_links_df.count(), len(pages_links_df.columns))
+# pages_links_df.show(20)
 
 
 end_table = look_up_df.join(pages_links_df, look_up_df.page_title == pages_links_df.link).select('link_id', 'page_title', 'page_id')
-print(end_table.printSchema())
-print(end_table.count(), len(end_table.columns))
-end_table.show(20)
+# print(end_table.printSchema())
+# print(end_table.count(), len(end_table.columns))
+# end_table.show(20)
 
 #orderby_link_id_df = end_table.orderBy("link_id")
 #print(orderby_link_id_df.printSchema())
@@ -64,15 +64,27 @@ end_table.show(20)
 #orderby_link_id_df.show(20)
 
 popularity_df = end_table.groupBy('link_id').agg(count('*').alias('cite_count'))
-print(popularity_df.printSchema())
-print(popularity_df.count(), len(popularity_df.columns))
-popularity_df.show(20)
+# print(popularity_df.printSchema())
+# print(popularity_df.count(), len(popularity_df.columns))
+# popularity_df.show(20)
 
 
-popularity_df.select('link_id', 'cite_count').\
-    write.jdbc(url=url,
-               table='count_table',
-               properties=properties,
-               mode='append')
+pages_in_out = tx_df_distinct.join(popularity_df, tx_df_distinct.page_id == popularity_df.link_id).select('page_id',
+                                                                                                          'page_title',
+                                                                                                          'time_stamp',
+                                                                                                          'links',
+                                                                                                          'link_cnt',
+                                                                                                          'cite_count')
+print(pages_in_out.printSchema())
+print(pages_in_out.count(), len(pages_in_out.columns))
+pages_in_out.show(20)
 
-print("POSTGRES DONE")
+
+
+# popularity_df.select('link_id', 'cite_count').\
+#     write.jdbc(url=url,
+#                table='count_table',
+#                properties=properties,
+#                mode='append')
+#
+# print("POSTGRES DONE")
