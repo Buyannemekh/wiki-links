@@ -67,3 +67,12 @@ popularity_df = end_table.groupBy('link_id').agg(count('*').alias('cite_count'))
 print(popularity_df.printSchema())
 print(popularity_df.count(), len(popularity_df.columns))
 popularity_df.show(20)
+
+
+popularity_df.select('link_id', 'cite_count').\
+    write.jdbc(url=url,
+               table='count_table',
+               properties=properties,
+               mode='append')
+
+print("POSTGRES DONE")
