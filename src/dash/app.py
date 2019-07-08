@@ -71,12 +71,11 @@ app.layout = html.Div([
         dcc.Link('Home', href='/',
                  style=style_header_button
                  ),
-        html.A('About', href='https://github.com/Buyannemekh',
+        html.A('LinkedIn', href='https://www.linkedin.com/in/buyan-munkhbat/',
                target='_blank',
                style=style_header_button),
-        dcc.Link('Contact', href='/contact',
-                 style=style_header_button
-                 ),
+        html.A('GitHub', href='https://github.com/Buyannemekh/wiki-links',
+               style=style_header_button),
         html.A('Resume', href='https://platform.insightdata.com/projects?keyword=2019B.DE.NY',
                target='_blank',
                style=style_header_button
