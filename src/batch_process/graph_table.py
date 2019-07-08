@@ -75,16 +75,15 @@ pages_in_out = tx_df_distinct.join(popularity_df, tx_df_distinct.page_id == popu
                                                                                                           'links',
                                                                                                           'link_cnt',
                                                                                                           'cite_count')
-print(pages_in_out.printSchema())
-print(pages_in_out.count(), len(pages_in_out.columns))
-pages_in_out.show(20)
+# print(pages_in_out.printSchema())
+# print(pages_in_out.count(), len(pages_in_out.columns))
+# pages_in_out.show(20)
 
 
+popularity_df.select('page_id', 'page_title', 'time_stamp', 'links', 'link_cnt', 'cite_count').\
+    write.jdbc(url=url,
+               table='pages_in_out',
+               properties=properties,
+               mode='append')
 
-# popularity_df.select('link_id', 'cite_count').\
-#     write.jdbc(url=url,
-#                table='count_table',
-#                properties=properties,
-#                mode='append')
-#
-# print("POSTGRES DONE")
+print("POSTGRES DONE")
