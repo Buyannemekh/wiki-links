@@ -80,7 +80,7 @@ pages_in_out = tx_df_distinct.join(popularity_df, tx_df_distinct.page_id == popu
 # pages_in_out.show(20)
 
 
-popularity_df.select('page_id', 'page_title', 'time_stamp', 'links', 'link_cnt', 'cite_count').\
+pages_in_out.select('page_id', 'page_title', 'time_stamp', 'links', 'link_cnt', 'cite_count').\
     write.jdbc(url=url,
                table='pages_in_out',
                properties=properties,
