@@ -1,10 +1,15 @@
 # UpdatePages 
-This is a project carried out during the seven-week [Insight Data Engineering Fellows Program](https://www.insightdataengineering.com/) which helps recent grads and experienced software engineers learn the latest open source technologies by building a data platform to handle large, real-time datasets.
+I completed this project in three weeks as a Data Engineering fellow at [Insight Data Engineering Fellows Program](https://www.insightdataengineering.com/) in NYC, June 2019.
 
 ---
 
 ## Project Summary:
 This project helps Wikipedia to identify outdated articles. 
+
+Since Wikipedia page editing is purely volunteer service, some pages can remain outdated. Though Wikipedia has a page on [Articles in need of updating](https://en.wikipedia.org/wiki/Category:Wikipedia_articles_in_need_of_updating), it is hard to keep track of all the pages as data gets accumulated over time.
+
+My product is an analytics page for analyzing site-wide current updates on main pages of English Wikipedia. I analyze 45 million Wikipedia pages in zipped XML format, process them in Spark, and store in PostgreSQL. 
+[Presentation Slides](http://bit.ly/chrissyslides)
 
 ## Data Set:
 There is a way to download [wiki dumps](https://dumps.wikimedia.org/) for any project/language, the data is from early 2009. To access the latest versions of all Wikipedia page, go to this page and download files with the prefix "enwiki-latest-pages-meta-current"[1-27]. Wikipedia publishes the full site in 27 parts. Wikipedia offers other options for accessing their data, see a full description [here](https://en.wikipedia.org/wiki/Wikipedia:Database_download)
@@ -40,8 +45,10 @@ Install AWS CLI and [Pegasus](https://github.com/InsightDataScience/pegasus), wh
 | Postgres | v10.6 |
 
 
-
 ## Project Challenge
+
+## Demo
+[Dash UI Demo](http://www.wikilinks.dev)
 
 
 
