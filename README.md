@@ -4,8 +4,7 @@ This is a project carried out during the seven-week [Insight Data Engineering Fe
 ---
 
 ## Project Summary:
-This project aims to find the most wanted Wikipedia articles by finding the frequencies of [red links](https://en.wikipedia.org/wiki/Wikipedia:Red_link), which signifies that the page does not exist, in Wikipedia articles.
-
+This project helps Wikipedia to identify outdated articles. 
 
 #### Data:
 There is a way to download [wiki dumps](https://dumps.wikimedia.org/) for any project/language, the data is from early 2009. 
