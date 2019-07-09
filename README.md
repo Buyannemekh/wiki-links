@@ -6,15 +6,16 @@ This is a project carried out during the seven-week [Insight Data Engineering Fe
 ## Project Summary:
 This project helps Wikipedia to identify outdated articles. 
 
-#### Data:
-There is a way to download [wiki dumps](https://dumps.wikimedia.org/) for any project/language, the data is from early 2009. 
+## Data Set:
+There is a way to download [wiki dumps](https://dumps.wikimedia.org/) for any project/language, the data is from early 2009. d
 
-#### Use case:
+## Data Pipeline:
+![alt text](https://github.com/Buyannemekh/wiki-links/blob/development/img/pipeline.png)
 
-#### Pipeline:
+### Cluster set up
 
+### Environment 
 
-## Architecture
 
 ## Project Challenge
 
