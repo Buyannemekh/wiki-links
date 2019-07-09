@@ -76,5 +76,5 @@ def write_to_postgres(pages_in_out):
 
 if __name__ == "__main__":
     pages_in_out_degree = main()
-    write_to_postgres(pages_in_out_degree)
+    # write_to_postgres(pages_in_out_degree)
 
