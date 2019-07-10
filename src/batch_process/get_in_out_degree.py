@@ -77,6 +77,7 @@ def add_link_count(main_page_df, link_count_df):
     # look_up = create_look_up_table(main_page_df)
     end_table = main_page_df.join(link_count_df, main_page_df.page_title == link_count_df.link).\
         select('page_id', 'page_title', 'time_stamp', 'links', 'link_cnt', 'count')
+
     return end_table
 
 
@@ -94,7 +95,7 @@ def main():
 
 
 def write_to_postgres(pages_in_out):
-    pages_in_out.select('page_id', 'page_title', 'time_stamp', 'links', 'link_cnt', 'cite_count').\
+    pages_in_out.select('page_id', 'page_title', 'time_stamp', 'links', 'link_cnt', 'count').\
         write.jdbc(url=url,
                    table='pages_in_out',
                    properties=properties,
@@ -105,5 +106,5 @@ def write_to_postgres(pages_in_out):
 
 if __name__ == "__main__":
     pages_in_out_degree = main()
-    # write_to_postgres(pages_in_out_degree)
+    write_to_postgres(pages_in_out_degree)
 
