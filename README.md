@@ -15,7 +15,7 @@ My product is an analytics page for analyzing site-wide current updates on main 
 There is a way to download [wiki dumps](https://dumps.wikimedia.org/) for any project/language, the data is from early 2009. To access the latest versions of all Wikipedia page, go to this page and download files with the prefix "enwiki-latest-pages-meta-current"[1-27]. Wikipedia publishes the full site in 27 parts. Wikipedia offers other options for accessing their data, see a full description [here](https://en.wikipedia.org/wiki/Wikipedia:Database_download)
 
 ## Data Pipeline:
-![alt text](https://github.com/Buyannemekh/wiki-links/blob/development/img/pipeline.png)
+![alt text](https://github.com/Buyannemekh/wiki-links/blob/master/img/pipeline-0.png)
 
 UpdatePages is a batch processing pipeline over a large volume of data.
 
