@@ -77,6 +77,10 @@ class ParseXML:
         print_df_count(page_df_id_link_time) if print_table_info else None
         return page_df_id_link_time
 
+    def count_unique_links(self):
+        link_count_df = self.page_df_id_link_time.groupBy('link').count().orderBy('count', ascending=False)
+        link_count_df.show(10)
+
 
 # return list of link titles from a text if exist, else return empty list
 def find_links(text):
@@ -140,7 +144,7 @@ if __name__ == "__main__":
     os.environ["POSTGRES_PASSWORD"] = sys.argv[3]
     os.environ["POSTGRES_DBNAME"] = sys.argv[4]
 
-    process = ParseXML(current_file_2)
+    process = ParseXML(small_file)
 
     properties = {
         "user": os.environ["POSTGRES_USER"],
@@ -153,5 +157,7 @@ if __name__ == "__main__":
     port = "5432"
     url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
 
-    write_pages_to_postgres(df_pages=process.page_id_links, jdbc_url=url, connection_properties=properties)
-    write_links_to_postgres(df_links=process.page_df_id_link_time, jdbc_url=url, connection_properties=properties)
+    process.count_unique_links()
+
+    # write_pages_to_postgres(df_pages=process.page_id_links, jdbc_url=url, connection_properties=properties)
+    # write_links_to_postgres(df_links=process.page_df_id_link_time, jdbc_url=url, connection_properties=properties)
