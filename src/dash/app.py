@@ -114,14 +114,8 @@ index_page = html.Div([
              href='/page-2'),
 
     html.Br(),
-
-    dcc.Link(html.Button('The most cited pages', style=style_button),
-             href='/page-3'),
-
-    html.Br(),
-
     dcc.Link(html.Button("I'm feeling lucky", id='lucky-button', style=style_button),
-             href='/page-4'),
+             href='/page-3'),
 
 ])
 
@@ -289,8 +283,8 @@ df_random_page = pd.read_sql_query(sql_random_page, con)
 df_random_page_id = df_random_page['page_id'][0]
 df_random_page_title = df_random_page['page_title'][0]
 
-page_4_layout = html.Div([
-    html.H1('Page 4'),
+page_3_layout = html.Div([
+    html.H1('Page 3'),
     html.Br(),
 
     html.H6("You got '{}'!".format(df_random_page_title)),
@@ -316,8 +310,8 @@ def display_page(pathname):
         return page_1_layout
     elif pathname == '/page-2':
         return page_2_layout
-    elif pathname == '/page-4':
-        return page_4_layout
+    elif pathname == '/page-3':
+        return page_3_layout
     else:
         return index_page
     # You could also return a 404 "URL not found" page here
