@@ -33,6 +33,7 @@ def read_postgres():
         .option("user", user) \
         .option("password", password) \
         .option("dbtable", "pages") \
+        .option("numPartitions", '10000')\
         .load()
 
     main_page_df = df.orderBy("page_id", ascending=False).dropDuplicates(['page_id'])
