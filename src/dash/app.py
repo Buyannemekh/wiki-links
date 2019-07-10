@@ -161,7 +161,12 @@ def update_output(n_clicks, value):
             str_links = ', '.join(links)
 
             dt_page = dash_table.DataTable(data=df_page_search.to_dict('records'),
-                                           columns=[{"name": i, "id": i} for i in df_page_search.columns])
+                                           columns=[{"name": i, "id": i} for i in df_page_search.columns],
+                                           style_cell={
+                                               'font_family': 'sans-serif',
+                                               'font_size': '26px',
+                                               'text_align': 'center'
+                                           })
 
             return dt_page, str_links
     else:
@@ -243,7 +248,12 @@ def get_page_table(start_date, end_date):
     else:
         print('date not selected!')
     return dash_table.DataTable(data=df_page.to_dict('records'),
-                                columns=[{"name": i, "id": i} for i in df_page.columns])
+                                columns=[{"name": i, "id": i} for i in df_page.columns],
+                                style_cell={
+                                    'font_family': 'sans-serif',
+                                    'font_size': '26px',
+                                    'text_align': 'center'
+                                })
 
 
 @app.callback(
