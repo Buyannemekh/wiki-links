@@ -33,11 +33,23 @@ def read_postgres():
         .option("user", user) \
         .option("password", password) \
         .option("dbtable", "pages") \
-        .option("numPartitions", '10000')\
         .load()
 
     main_page_df = df.orderBy("page_id", ascending=False).dropDuplicates(['page_id'])
     return main_page_df
+
+
+def read_postgres_link_count():
+    link_count_df = spark.read\
+        .format("jdbc") \
+        .option("url", url) \
+        .option("user", user) \
+        .option("password", password) \
+        .option("dbtable", "link_count") \
+        .load()
+
+    #main_page_df = df.orderBy("page_id", ascending=False).dropDuplicates(['page_id'])
+    return link_count_df
 
 
 def create_df_in_out_degree(main_page_df):
@@ -56,13 +68,29 @@ def create_df_in_out_degree(main_page_df):
     return pages_in_out
 
 
+def create_look_up_table(main_page_df):
+    look_up_df = main_page_df.select(col('page_id').alias('link_id'), col('page_title'))
+    return look_up_df
+
+
+def add_link_count(main_page_df, link_count_df):
+    # look_up = create_look_up_table(main_page_df)
+    end_table = main_page_df.join(link_count_df, main_page_df.page_title == link_count_df.link).\
+        select('page_id', 'page_title', 'time_stamp', 'links', 'link_cnt', 'count')
+    return end_table
+
+
 def main():
     main_page_df = read_postgres()
-    pages_in_out_df = create_df_in_out_degree(main_page_df)
+    link_count_df = read_postgres_link_count()
+    # pages_in_out_df = create_df_in_out_degree(main_page_df)
     # print(pages_in_out_df.printSchema())
     # print(pages_in_out_df.count(), len(pages_in_out_df.columns))
-    pages_in_out_df.show(20)
-    return pages_in_out_df
+    # pages_in_out_df.show(20)
+
+    df_main_link_count = add_link_count(main_page_df, link_count_df)
+
+    return df_main_link_count
 
 
 def write_to_postgres(pages_in_out):
