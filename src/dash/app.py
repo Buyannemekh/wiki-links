@@ -148,13 +148,13 @@ page_1_layout = html.Div([
     [dash.dependencies.State('input-box', 'value')])
 def update_output(n_clicks, value):
     if value is not None:
-        sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE page_title = " + "'" + value + "';"
+        sql = "SELECT page_id, page_title, time_stamp, link_cnt, count FROM pages_in_out WHERE page_title = " + "'" + value + "';"
         df_page_search = pd.read_sql_query(sql, con)
 
         if df_page_search.shape[0] == 0:
             return 'Article named "{}" not found.'.format(value)
         else:
-            sql_link = "SELECT  links FROM pages WHERE page_title = " + "'" + value + "';"
+            sql_link = "SELECT  links FROM pages_in_out WHERE page_title = " + "'" + value + "';"
             df_page_links = pd.read_sql_query(sql_link, con)
 
             links = df_page_links['links'][0][:100];
@@ -234,7 +234,7 @@ def get_page_table(start_date, end_date):
         start_date_string = start_date.strftime("'%Y-%m-%d'")
         end_date = dt.strptime(end_date, '%Y-%m-%d')
         end_date_string = end_date.strftime("'%Y-%m-%d'")
-        sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE time_stamp BETWEEN " + \
+        sql = "SELECT page_id, page_title, time_stamp, link_cnt, count FROM pages_in_out WHERE time_stamp BETWEEN " + \
               start_date_string + " AND " + end_date_string + " ORDER BY time_stamp ASC, link_cnt DESC  LIMIT 20;"
         df_page = pd.read_sql_query(sql, con)
         # print(df_page)
