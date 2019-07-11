@@ -243,7 +243,7 @@ def get_page_table(start_date, end_date):
         end_date = dt.strptime(end_date, '%Y-%m-%d')
         end_date_string = end_date.strftime("'%Y-%m-%d'")
         sql = "SELECT page_id, page_title, time_stamp, link_cnt, count FROM pages_in_out WHERE time_stamp BETWEEN " + \
-              start_date_string + " AND " + end_date_string + " ORDER BY count DESC  LIMIT 20;"
+              start_date_string + " AND " + end_date_string + " ORDER BY count DESC  LIMIT 100;"
         df_page = pd.read_sql_query(sql, con)
         df_page.columns = ["ID", "Title", "Last Edited", "Number of Hyperlinks", "Number of Incoming Links"]
         # print(df_page)
