@@ -14,10 +14,12 @@ os.environ["POSTGRES_USER"] = sys.argv[2]
 os.environ["POSTGRES_PASSWORD"] = sys.argv[3]
 os.environ["POSTGRES_DBNAME"] = sys.argv[4]
 
+
 user = os.environ["POSTGRES_USER"]
 host = os.environ["POSTGRES_HOSTNAME"]
 password = os.environ["POSTGRES_PASSWORD"]
 dbname = os.environ["POSTGRES_DBNAME"]
+
 
 # Settings for psycopg Postgres connector
 con = psycopg2.connect(database=dbname, user=user, password=password, host=host)
@@ -255,7 +257,7 @@ def get_page_table(start_date, end_date):
                                     style_cell={
                                         'width': '150px',
                                         'font_family': 'sans-serif',
-                                        'font_size': '18px',
+                                        'font_size': '16px',
                                         'text_align': 'center',
                                     })
     else:
