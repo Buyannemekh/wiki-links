@@ -80,15 +80,15 @@ app.layout = html.Div([
                target='_blank',
                style=style_header_button
                ),
-        dcc.Link('LinkedIn', href='/https://www.linkedin.com/in/buyan-munkhbat/',
-                 style={'class': 'active',
-                        'display': 'block',
-                        'float': 'right',
-                        'padding': '.5vh 2vh',
-                        'text-align': 'center',
-                        'font-size': '2vh',
-                        'color': 'white',
-                        'text-decoration': 'none'})
+        html.A('LinkedIn', href='/https://www.linkedin.com/in/buyan-munkhbat/',
+               style={'class': 'active',
+                      'display': 'block',
+                      'float': 'right',
+                      'padding': '.5vh 2vh',
+                      'text-align': 'center',
+                      'font-size': '2vh',
+                      'color': 'white',
+                      'text-decoration': 'none'})
     ], style=style_header),
     html.Div(id='page-content'),
 ])
