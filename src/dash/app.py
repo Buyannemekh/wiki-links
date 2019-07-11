@@ -148,7 +148,8 @@ page_1_layout = html.Div([
     [dash.dependencies.State('input-box', 'value')])
 def update_output(n_clicks, value):
     if value is not None:
-        sql = "SELECT page_id, page_title, time_stamp, link_cnt, count FROM pages_in_out WHERE page_title = " + "'" + value + "';"
+        sql = "SELECT page_id, page_title, time_stamp, link_cnt, count FROM pages_in_out WHERE page_title = " \
+              + "'" + value + "';"
         df_page_search = pd.read_sql_query(sql, con)
 
         if df_page_search.shape[0] == 0:
@@ -159,6 +160,8 @@ def update_output(n_clicks, value):
 
             links = df_page_links['links'][0][:100];
             str_links = ', '.join(links)
+
+            df_page_search.columns = ["ID", "Title", "Last Edited", "Number of Hyperlinks", "Number of Incoming Links"]
 
             dt_page = dash_table.DataTable(data=df_page_search.to_dict('records'),
                                            columns=[{"name": i, "id": i} for i in df_page_search.columns],
