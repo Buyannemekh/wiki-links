@@ -245,18 +245,21 @@ def get_page_table(start_date, end_date):
         sql = "SELECT page_id, page_title, time_stamp, link_cnt, count FROM pages_in_out WHERE time_stamp BETWEEN " + \
               start_date_string + " AND " + end_date_string + " ORDER BY count DESC  LIMIT 20;"
         df_page = pd.read_sql_query(sql, con)
+        df_page.columns = ["ID", "Title", "Last Edited", "Number of Hyperlinks", "Number of Incoming Links"]
         # print(df_page)
         # df_page['page_title'] = df_page.apply(lambda row: '<a href="https://en.wikipedia.org/?curid={0}">{1}</a>'
         #                                       .format(row['page_id'], row['page_title']), axis=1)
+        return dash_table.DataTable(data=df_page.to_dict('records'),
+                                    columns=[{"name": i, "id": i} for i in df_page.columns],
+                                    style_cell={
+                                        'font_family': 'sans-serif',
+                                        'font_size': '26px',
+                                        'text_align': 'center'
+                                    })
     else:
         print('date not selected!')
-    return dash_table.DataTable(data=df_page.to_dict('records'),
-                                columns=[{"name": i, "id": i} for i in df_page.columns],
-                                style_cell={
-                                    'font_family': 'sans-serif',
-                                    'font_size': '26px',
-                                    'text_align': 'center'
-                                })
+        return 'Please enter valid timeframe.'
+
 
 
 @app.callback(
