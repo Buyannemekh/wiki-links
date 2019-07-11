@@ -253,7 +253,7 @@ def get_page_table(start_date, end_date):
                                     columns=[{"name": i, "id": i} for i in df_page.columns],
                                     style_cell={
                                         'font_family': 'sans-serif',
-                                        'font_size': '26px',
+                                        'font_size': '20px',
                                         'text_align': 'center'
                                     })
     else:
