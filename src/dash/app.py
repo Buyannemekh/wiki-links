@@ -257,7 +257,7 @@ def get_page_table(start_date, end_date):
                                     style_cell={
                                         'width': '150px',
                                         'font_family': 'sans-serif',
-                                        'font_size': '16px',
+                                        'font_size': '12px',
                                         'text_align': 'center',
                                     })
     else:
