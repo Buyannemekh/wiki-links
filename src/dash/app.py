@@ -81,7 +81,8 @@ app.layout = html.Div([
                style=style_header_button
                ),
         html.A('LinkedIn', href='/https://www.linkedin.com/in/buyan-munkhbat/',
-               style={'class': 'active',
+               target='_blank',
+               style={
                       'display': 'block',
                       'float': 'right',
                       'padding': '.5vh 2vh',
