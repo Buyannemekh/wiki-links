@@ -167,7 +167,7 @@ def update_output(n_clicks, value):
                                            columns=[{"name": i, "id": i} for i in df_page_search.columns],
                                            style_cell={
                                                'font_family': 'sans-serif',
-                                               'font_size': '26px',
+                                               'font_size': '20px',
                                                'text_align': 'center'
                                            })
 
