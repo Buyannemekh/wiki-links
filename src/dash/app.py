@@ -251,6 +251,7 @@ def get_page_table(start_date, end_date):
         #                                       .format(row['page_id'], row['page_title']), axis=1)
         return dash_table.DataTable(data=df_page.to_dict('records'),
                                     columns=[{"name": i, "id": i} for i in df_page.columns],
+                                    fixed_rows={'headers': True, 'data': 0},
                                     style_cell={
                                         'font_family': 'sans-serif',
                                         'font_size': '18px',
