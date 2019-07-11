@@ -80,7 +80,7 @@ app.layout = html.Div([
                target='_blank',
                style=style_header_button
                ),
-        html.A('LinkedIn', href='/https://www.linkedin.com/in/buyan-munkhbat/',
+        html.A('LinkedIn', href='https://www.linkedin.com/in/buyan-munkhbat/',
                target='_blank',
                style={
                       'display': 'block',
