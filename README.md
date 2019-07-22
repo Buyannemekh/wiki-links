@@ -69,4 +69,5 @@ Then the number of incoming links to each page was done by doing data aggregatio
 
 ## Demo
 [Dash UI Demo](http://www.wikilinks.dev) 
+
 [YouTube DEMO](https://www.youtube.com/watch?v=kWVvCDV_RKo)
