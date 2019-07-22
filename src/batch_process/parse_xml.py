@@ -77,6 +77,11 @@ class ParseXML:
         print_df_count(page_df_id_link_time) if print_table_info else None
         return page_df_id_link_time
 
+    def count_unique_links(self):
+        link_count_df = self.page_df_id_link_time.groupBy('link').count().orderBy('count', ascending=False)
+        link_count_df.show(10)
+        return link_count_df
+
 
 # return list of link titles from a text if exist, else return empty list
 def find_links(text):
@@ -127,6 +132,17 @@ def write_links_to_postgres(df_links, jdbc_url, connection_properties):
     print("LINKS DONE")
 
 
+# write link and count data frame from batch_process to postgres
+def write_link_count_to_postgres(df_links, jdbc_url, connection_properties):
+    df_links.select('link', 'count').\
+        write.jdbc(url=jdbc_url,
+                   table='link_count',
+                   properties=connection_properties,
+                   mode='append')
+
+    print("LINKS DONE")
+
+
 if __name__ == "__main__":
     small_file = "s3a://wikipedia-article-sample-data/enwiki-latest-pages-articles14.xml-p7697599p7744799.bz2"    #50mb
     current_large_file = "s3a://wiki-meta/meta-current27.xml.bz2"  #628mb
@@ -153,5 +169,8 @@ if __name__ == "__main__":
     port = "5432"
     url = "jdbc:postgresql://{0}:{1}/{2}".format(hostname, port, database)
 
+    link_count = process.count_unique_links()
+
     write_pages_to_postgres(df_pages=process.page_id_links, jdbc_url=url, connection_properties=properties)
     write_links_to_postgres(df_links=process.page_df_id_link_time, jdbc_url=url, connection_properties=properties)
+    write_link_count_to_postgres(df_links=link_count, jdbc_url=url, connection_properties=properties)

@@ -14,10 +14,12 @@ os.environ["POSTGRES_USER"] = sys.argv[2]
 os.environ["POSTGRES_PASSWORD"] = sys.argv[3]
 os.environ["POSTGRES_DBNAME"] = sys.argv[4]
 
+
 user = os.environ["POSTGRES_USER"]
 host = os.environ["POSTGRES_HOSTNAME"]
 password = os.environ["POSTGRES_PASSWORD"]
 dbname = os.environ["POSTGRES_DBNAME"]
+
 
 # Settings for psycopg Postgres connector
 con = psycopg2.connect(database=dbname, user=user, password=password, host=host)
@@ -71,24 +73,23 @@ app.layout = html.Div([
         dcc.Link('Home', href='/',
                  style=style_header_button
                  ),
-        html.A('LinkedIn', href='https://www.linkedin.com/in/buyan-munkhbat/',
+        html.A('Github', href='https://github.com/Buyannemekh/wiki-links',
                target='_blank',
                style=style_header_button),
-        html.A('GitHub', href='https://github.com/Buyannemekh/wiki-links',
-               style=style_header_button),
-        html.A('Res', href='https://platform.insightdata.com/projects?keyword=2019B.DE.NY',
+        html.A('Slides', href='https://bit.ly/2xJu8a9',
                target='_blank',
                style=style_header_button
                ),
-        dcc.Link('UpdatePages', href='/',
-                 style={'class': 'active',
-                        'display': 'block',
-                        'float': 'right',
-                        'padding': '.5vh 2vh',
-                        'text-align': 'center',
-                        'font-size': '2vh',
-                        'color': 'white',
-                        'text-decoration': 'none'})
+        html.A('LinkedIn', href='https://www.linkedin.com/in/buyan-munkhbat/',
+               target='_blank',
+               style={
+                      'display': 'block',
+                      'float': 'right',
+                      'padding': '.5vh 2vh',
+                      'text-align': 'center',
+                      'font-size': '2vh',
+                      'color': 'white',
+                      'text-decoration': 'none'})
     ], style=style_header),
     html.Div(id='page-content'),
 ])
@@ -148,20 +149,28 @@ page_1_layout = html.Div([
     [dash.dependencies.State('input-box', 'value')])
 def update_output(n_clicks, value):
     if value is not None:
-        sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE page_title = " + "'" + value + "';"
+        sql = "SELECT page_id, page_title, time_stamp, link_cnt, count FROM pages_in_out WHERE page_title = " \
+              + "'" + value + "';"
         df_page_search = pd.read_sql_query(sql, con)
 
         if df_page_search.shape[0] == 0:
             return 'Article named "{}" not found.'.format(value)
         else:
-            sql_link = "SELECT  links FROM pages WHERE page_title = " + "'" + value + "';"
+            sql_link = "SELECT  links FROM pages_in_out WHERE page_title = " + "'" + value + "';"
             df_page_links = pd.read_sql_query(sql_link, con)
 
             links = df_page_links['links'][0][:100];
             str_links = ', '.join(links)
 
+            df_page_search.columns = ["ID", "Title", "Last Edited", "Number of Hyperlinks", "Number of Incoming Links"]
+
             dt_page = dash_table.DataTable(data=df_page_search.to_dict('records'),
-                                           columns=[{"name": i, "id": i} for i in df_page_search.columns])
+                                           columns=[{"name": i, "id": i} for i in df_page_search.columns],
+                                           style_cell={
+                                               'font_family': 'sans-serif',
+                                               'font_size': '20px',
+                                               'text_align': 'center'
+                                           })
 
             return dt_page, str_links
     else:
@@ -234,16 +243,26 @@ def get_page_table(start_date, end_date):
         start_date_string = start_date.strftime("'%Y-%m-%d'")
         end_date = dt.strptime(end_date, '%Y-%m-%d')
         end_date_string = end_date.strftime("'%Y-%m-%d'")
-        sql = "SELECT page_id, page_title, time_stamp, link_cnt FROM pages WHERE time_stamp BETWEEN " + \
-              start_date_string + " AND " + end_date_string + " ORDER BY time_stamp ASC, link_cnt DESC  LIMIT 20;"
+        sql = "SELECT page_id, page_title, time_stamp, link_cnt, count FROM pages_in_out WHERE time_stamp BETWEEN " + \
+              start_date_string + " AND " + end_date_string + " ORDER BY count DESC  LIMIT 100;"
         df_page = pd.read_sql_query(sql, con)
+        df_page.columns = ["ID", "Title", "Last Edited", "Number of Hyperlinks", "Number of Incoming Links"]
         # print(df_page)
         # df_page['page_title'] = df_page.apply(lambda row: '<a href="https://en.wikipedia.org/?curid={0}">{1}</a>'
         #                                       .format(row['page_id'], row['page_title']), axis=1)
+        return dash_table.DataTable(data=df_page.to_dict('records'),
+                                    columns=[{"name": i, "id": i} for i in df_page.columns],
+                                    fixed_rows={'headers': True, 'data': 0},
+                                    style_cell={
+                                        'width': '150px',
+                                        'font_family': 'sans-serif',
+                                        'font_size': '12px',
+                                        'text_align': 'center',
+                                    })
     else:
         print('date not selected!')
-    return dash_table.DataTable(data=df_page.to_dict('records'),
-                                columns=[{"name": i, "id": i} for i in df_page.columns])
+        return 'Please enter valid timeframe.'
+
 
 
 @app.callback(

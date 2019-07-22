@@ -51,6 +51,9 @@ Install AWS CLI and [Pegasus](https://github.com/InsightDataScience/pegasus), wh
 
 ## Demo
 [Dash UI Demo](http://www.wikilinks.dev)
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev_count_links
 
 
