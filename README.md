@@ -48,7 +48,25 @@ Install AWS CLI and [Pegasus](https://github.com/InsightDataScience/pegasus), wh
 
 
 ## Project Challenge
+You provide a row tag of your xml files to treat as a row to parse your file using Spark-XML library and each record under a tag should be read by a single Java Virtual Machine (JVM). Because of this requirement, I have encountered JVM out of memory error due to uneven text information partitioned into my spark machines when some Wikipedia articles are relatively large compare to others. However, I was able to read all the meta data by tuning the {worker, driver} node as well as EC2 instance type. 
+
+After reading the 45 million pages of meta data, I preprocessed and cleaned it by filtering out only original articles by its namespace. 
+
+Another challenge I faced was quantifying the number of incoming links, which I used as a ranking metrics when showing the outdated articles, of each page. Each hyperlinks in each page were extracted using Regex in UDF, then I created the following information in the following DB structure: 
+
+| ID     | Title | Timestamp | Hyperlinks |
+|:-------|:------|:------|:------|
+| 1       | "X"| 2019 |[“Y”, “Z”]|
+| 2 | "Y" |2018|[“X”, “Z”]|
+
+Then the number of incoming links to each page was done by doing data aggregation in spark. 
+
+| ID     | Title | Timestamp | Hyperlinks | Incoming links |
+|:-------|:------|:------|:------|:------|
+| 1       | "X"| 2019 |[“Y”, “Z”]|“Y”|
+| 2 | "Y" |2018|[“X”, “Z”]|“X”|
+
 
 ## Demo
-[Dash UI Demo](http://www.wikilinks.dev)
-
+[Dash UI Demo](http://www.wikilinks.dev) 
+[YouTube DEMO](https://www.youtube.com/watch?v=kWVvCDV_RKo)
