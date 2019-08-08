@@ -11,7 +11,7 @@ In this project, I created a dashboard to identify pages that are needed to be u
 To achieve this, I used Wikipedia data dump, which is publicly available and met the goal of my project statement. Since Wikipedia page editing is purely volunteer service, some pages can remain outdated. Though Wikipedia has a page on [Articles in need of updating](https://en.wikipedia.org/wiki/Category:Wikipedia_articles_in_need_of_updating), it is hard to keep track of all the pages as data gets accumulated over time.
 
 UpdatePages provides a dashboard for analyzing site-wide current updates on main pages of English Wikipedia. I analyze 45 million Wikipedia pages in zipped XML format, process them in Spark, and store in PostgreSQL. 
-[Presentation Slides](http://bit.ly/chrissyslides)
+
 
 ## Data Set:
 There is a way to download [wiki dumps](https://dumps.wikimedia.org/) for any project/language, the data is from early 2009. To access the latest versions of all Wikipedia page, go to this page and download files with the prefix "enwiki-latest-pages-meta-current"[1-27]. Wikipedia publishes the full site in 27 parts. Wikipedia offers other options for accessing their data, see a full description [here](https://en.wikipedia.org/wiki/Wikipedia:Database_download)
@@ -68,6 +68,8 @@ Then the number of incoming links to each page was done by doing data aggregatio
 
 
 ## Demo
+[Presentation Slides](https://docs.google.com/presentation/d/12b4CpDZJn_oRI3eIHPEScBUuNHfqxF5xnJeo3y54csc/edit?usp=sharing)
+
 [Dash UI Demo](http://www.wikilinks.dev) 
 
 [YouTube Demo](https://www.youtube.com/watch?v=kWVvCDV_RKo)
